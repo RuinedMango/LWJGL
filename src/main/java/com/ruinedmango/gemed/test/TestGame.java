@@ -41,8 +41,8 @@ public class TestGame implements ILogic{
 	public void init() throws Exception {
 		renderer.init();
 
-		Model model = loader.loadOBJModel("/models/bunny.obj");
-		model.setTexture(new Texture(loader.loadTexture("textures/blue.png")));
+		Model model = loader.loadOBJModel("/models/Fiat.obj");
+		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")));
 		entity = new Entity(model,new Vector3f(0,0,-5),new Vector3f(0,0,0),1);
 	}
 

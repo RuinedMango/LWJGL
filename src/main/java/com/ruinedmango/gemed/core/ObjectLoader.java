@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL20;
 public class ObjectLoader {
 	private List<Integer> vaos = new ArrayList<>();
 	private List<Integer> vbos = new ArrayList<>();
-	private List<Integer> textures = new ArrayList<>();
+	private List<Integer> texs = new ArrayList<>();
 	
 	public Model loadOBJModel(String fileName) {
 		List<String> lines = Utils.readAllLines(fileName);
@@ -99,6 +99,7 @@ public class ObjectLoader {
 	private static void processVertex(int pos,int texCoord,int normal, List<Vector2f> texCoordList,
 										List<Vector3f> normalList, List<Integer> indicesList,float[] texCoordArr
 										,float[] normalArr){
+		indicesList.add(pos);
 		if(texCoord >= 0) {
 			Vector2f texCoordVec = texCoordList.get(texCoord);
 			texCoordArr[pos * 2] = texCoordVec.x;
@@ -120,8 +121,8 @@ public class ObjectLoader {
 		int normal = -1;
 		pos = Integer.parseInt(lineToken[0]) - 1;
 		if(length > 1) {
-			String textureCoords = lineToken[1];
-			coords = textureCoords.length() > 0 ? Integer.parseInt(textureCoords) - 1 : -1;
+			String textCoords = lineToken[1];
+			coords = textCoords.length() > 0 ? Integer.parseInt(textCoords) - 1 : -1;
 			if(length > 2) {
 				normal = Integer.parseInt(lineToken[2]) - 1;
 			}
@@ -157,7 +158,7 @@ public class ObjectLoader {
 		}
 		
 		int id = GL11.glGenTextures();
-		textures.add(id);
+		texs.add(id);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
@@ -200,7 +201,7 @@ public class ObjectLoader {
 		for(int vbo : vbos) {
 			GL30.glDeleteBuffers(vbo);
 		}
-		for(int texture : textures) {
+		for(int texture : texs) {
 			GL11.glDeleteTextures(texture);
 		}
 	}
