@@ -1,6 +1,7 @@
 package main.java.com.ruinedmango.gemed.core.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.IntBuffer;
@@ -36,8 +37,11 @@ public class Utils {
 		try(BufferedReader br = new BufferedReader(new InputStreamReader(Class.forName(Utils.class.getName()).getResourceAsStream(fileName)))){
 			String line;
 			while((line = br.readLine()) != null) {
-				list.
+				list.add(line);
 			}
+		}catch(IOException | ClassNotFoundException e) {
+			e.printStackTrace();
 		}
+		return list;
 	}
 }
