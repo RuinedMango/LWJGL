@@ -42,10 +42,10 @@ public class MouseInput {
 			boolean rotateX = x != 0;
 			boolean rotateY = y != 0;
 			if(rotateX) {
-				displVec.x = (float) x;
+				displVec.y = (float) x;
 			}
 			if(rotateY) {
-				displVec.y = (float) -y;
+				displVec.x = (float) y;
 			}
 		}
 		previousPos.x = currentPos.x;

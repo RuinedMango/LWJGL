@@ -21,7 +21,7 @@ public class Camera {
 			position.x += (float) Math.sin(Math.toRadians(rotation.y)) * -1.0f * z;
 			position.z += (float) Math.cos(Math.toRadians(rotation.y)) * z;
 		}
-		if(z != 0) {
+		if(x != 0) {
 			position.x += (float) Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * x;
 			position.z += (float) Math.cos(Math.toRadians(rotation.y - 90)) * x;
 		}
@@ -33,14 +33,14 @@ public class Camera {
 		this.position.z = z;
 	}
 	public void setRotation(float x,float y,float z) {
-		this.position.x = x;
-		this.position.y = y;
-		this.position.z = z;
+		this.rotation.x = x;
+		this.rotation.y = y;
+		this.rotation.z = z;
 	}
 	public void moveRotation(float x,float y,float z) {
-		this.position.x += x;
-		this.position.y += y;
-		this.position.z += z;
+		this.rotation.x += x;
+		this.rotation.y += y;
+		this.rotation.z += z;
 	}
 
 	public Vector3f getPosition() {
