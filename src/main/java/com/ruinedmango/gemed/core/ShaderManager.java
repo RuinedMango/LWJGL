@@ -9,6 +9,8 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
+import main.java.com.ruinedmango.gemed.core.entity.Material;
+
 public class ShaderManager {
 	private final int programID;
 	private int vertexShaderID;
@@ -30,6 +32,14 @@ public class ShaderManager {
 			throw new Exception("Could not load uniform " + uniformName);
 		}
 		uniforms.put(uniformName, uniformLocation);
+	}
+	
+	public void createMaterialUniform(String uniformName) throws Exception{
+		createUniform(uniformName + ".ambient");
+		createUniform(uniformName + ".diffuse");
+		createUniform(uniformName + ".specular");
+		createUniform(uniformName + ".hasTexture");
+		createUniform(uniformName + ".reflectance");
 	}
 	
 	public void setUniform(String uniformname, Matrix4f value) {
@@ -60,6 +70,14 @@ public class ShaderManager {
 	
 	public void setUniform(String uniformname, float value) {
 		GL20.glUniform1f(uniforms.get(uniformname), value);
+	}
+	
+	public void setUniform(String uniformName, Material material) {
+		setUniform(uniformName + ".ambient", material.getAmbientColour());
+		setUniform(uniformName + ".diffuse", material.getDiffuseColour());
+		setUniform(uniformName + ".specular", material.getSpecularColour());
+		setUniform(uniformName + ".hasTexture", material.hasTexture() ? 1 : 0);
+		setUniform(uniformName + ".reflectance", material.getReflectance());
 	}
 	
 	public void createVertexShader(String shaderCode) throws Exception{

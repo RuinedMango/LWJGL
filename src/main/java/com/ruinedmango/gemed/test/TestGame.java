@@ -42,7 +42,7 @@ public class TestGame implements ILogic{
 		renderer.init();
 
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
-		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")));
+		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
 		entity = new Entity(model,new Vector3f(0,0,-5),new Vector3f(0,0,0),1);
 	}
 
@@ -77,7 +77,7 @@ public class TestGame implements ILogic{
 			Vector2f rotVec = mouseInput.getDisplVec();
 			camera.moveRotation(rotVec.x * Consts.MOUSE_SENSITIVITY, rotVec.y * Consts.MOUSE_SENSITIVITY, 0);
 		}
-		
+		entity.incRotation(0, 0.25f, 0);
 	}
 
 	@Override
@@ -86,7 +86,6 @@ public class TestGame implements ILogic{
 			GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
 			window.setResize(true);
 		}
-		window.setClearColour(0.0f,0.0f,0.0f,0.0f);
 		renderer.render(entity, camera);
 	}
 
