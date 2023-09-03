@@ -6,8 +6,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
-import main.java.com.ruinedmango.gemed.core.utils.Utils;
-
 import org.lwjgl.opengl.GL;
 import org.lwjgl.glfw.GLFW;
 
