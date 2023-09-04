@@ -11,6 +11,7 @@ import org.lwjgl.system.MemoryStack;
 
 import main.java.com.ruinedmango.gemed.core.entity.Material;
 import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
+import main.java.com.ruinedmango.gemed.lighting.PointLight;
 
 public class ShaderManager {
 	private final int programID;
@@ -47,6 +48,15 @@ public class ShaderManager {
 		createUniform(uniformName + ".specular");
 		createUniform(uniformName + ".hasTexture");
 		createUniform(uniformName + ".reflectance");
+	}
+	
+	public void createPointLightUniform(String uniformName) throws Exception{
+		createUniform(uniformName + ".colour");
+		createUniform(uniformName + ".position");
+		createUniform(uniformName + ".intensity");
+		createUniform(uniformName + ".constant");
+		createUniform(uniformName + ".linear");
+		createUniform(uniformName + ".exponent");
 	}
 	
 	public void setUniform(String uniformname, Matrix4f value) {
@@ -91,6 +101,15 @@ public class ShaderManager {
 		setUniform(uniformName + ".colour", directionalLight.getColour());
 		setUniform(uniformName + ".direction", directionalLight.getDirection());
 		setUniform(uniformName + ".intensity", directionalLight.getIntensity());
+	}
+	
+	public void setUniform(String uniformName, PointLight pointLight) {
+		setUniform(uniformName + ".colour", pointLight.getColour());
+		setUniform(uniformName + ".position", pointLight.getPosition());
+		setUniform(uniformName + ".intensity", pointLight.getIntensity());
+		setUniform(uniformName + ".constant", pointLight.getConstant());
+		setUniform(uniformName + ".linear", pointLight.getLinear());
+		setUniform(uniformName + ".exponent", pointLight.getExponent());
 	}
 	
 	public void createVertexShader(String shaderCode) throws Exception{

@@ -3,7 +3,8 @@ package main.java.com.ruinedmango.gemed.lighting;
 import org.joml.Vector3f;
 
 public class DirectionalLight {
-	private Vector3f colour, direction;
+	private Vector3f colour;
+	private Vector3f direction;
 	private float intensity;
 	
 	public DirectionalLight(Vector3f colour, Vector3f direction, float intensity) {
