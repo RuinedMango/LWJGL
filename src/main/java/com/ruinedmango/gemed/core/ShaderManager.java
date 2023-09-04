@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryStack;
 import main.java.com.ruinedmango.gemed.core.entity.Material;
 import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 import main.java.com.ruinedmango.gemed.lighting.PointLight;
+import main.java.com.ruinedmango.gemed.lighting.SpotLight;
 
 public class ShaderManager {
 	private final int programID;
@@ -57,6 +58,12 @@ public class ShaderManager {
 		createUniform(uniformName + ".constant");
 		createUniform(uniformName + ".linear");
 		createUniform(uniformName + ".exponent");
+	}
+	
+	public void createSpotLightUniform(String uniformName) throws Exception{
+		createPointLightUniform(uniformName + ".pl");
+		createUniform(uniformName + ".conedir");
+		createUniform(uniformName + ".cutoff");
 	}
 	
 	public void setUniform(String uniformname, Matrix4f value) {
@@ -110,6 +117,11 @@ public class ShaderManager {
 		setUniform(uniformName + ".constant", pointLight.getConstant());
 		setUniform(uniformName + ".linear", pointLight.getLinear());
 		setUniform(uniformName + ".exponent", pointLight.getExponent());
+	}
+	public void setUniform(String uniformName, SpotLight spotLight) {
+		setUniform(uniformName + ".pl",spotLight.getPointLight());
+		setUniform(uniformName + ".conedir",spotLight.getConeDirection());
+		setUniform(uniformName + ".cutoff",spotLight.getCutoff());
 	}
 	
 	public void createVertexShader(String shaderCode) throws Exception{

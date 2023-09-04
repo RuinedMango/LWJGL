@@ -17,6 +17,7 @@ import main.java.com.ruinedmango.gemed.core.entity.Texture;
 import main.java.com.ruinedmango.gemed.core.utils.Consts;
 import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 import main.java.com.ruinedmango.gemed.lighting.PointLight;
+import main.java.com.ruinedmango.gemed.lighting.SpotLight;
 
 
 
@@ -34,6 +35,7 @@ public class TestGame implements ILogic{
 	public float lightAngle;
 	private DirectionalLight directionalLight;
 	private PointLight pointLight;
+	private SpotLight spotLight;
 	
 	public TestGame() {
 		renderer = new RenderManager();
@@ -51,10 +53,17 @@ public class TestGame implements ILogic{
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
 		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
 		entity = new Entity(model,new Vector3f(0,0,-5),new Vector3f(0,0,0),1);
-		
-		float lightIntensity = 1.0f;
+		//point light
+		float lightIntensity = 5.0f;
 		Vector3f lightPosition = new Vector3f(0,0,-3.2f);
 		Vector3f lightColour = new Vector3f(1,1,1);
+		
+		//spot light
+		Vector3f coneDir = new Vector3f(0,0,1);
+		float cutoff = (float) Math.cos(Math.toRadians(180));
+		spotLight = new SpotLight(new PointLight(lightColour, new Vector3f(0,0,1f), lightIntensity,0,0,1), coneDir, cutoff);
+		
+		//directional light
 		pointLight = new PointLight(lightColour, lightPosition, lightIntensity, 0,0,1);
 		lightPosition = new Vector3f(-1,-10,0);
 		lightColour = new Vector3f(1,1,1);
@@ -83,16 +92,16 @@ public class TestGame implements ILogic{
 			cameraInc.y = 1;
 		}
 		if(window.isKeyPressed(GLFW.GLFW_KEY_O)) {
-			pointLight.getPosition().x += 0.1f;
+			spotLight.getPointLight().getPosition().x += 0.1f;
 		}
 		if(window.isKeyPressed(GLFW.GLFW_KEY_P)) {
-			pointLight.getPosition().x -= 0.1f;
+			spotLight.getPointLight().getPosition().x -= 0.1f;
 		}
 		if(window.isKeyPressed(GLFW.GLFW_KEY_L)) {
-			pointLight.getPosition().y += 0.1f;
+			spotLight.getPointLight().getPosition().y += 0.1f;
 		}
 		if(window.isKeyPressed(GLFW.GLFW_KEY_K)) {
-			pointLight.getPosition().y -= 0.1f;
+			spotLight.getPointLight().getPosition().y -= 0.1f;
 		}
 	}
 
@@ -132,7 +141,7 @@ public class TestGame implements ILogic{
 			GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
 			window.setResize(true);
 		}
-		renderer.render(entity, camera, directionalLight, pointLight);
+		renderer.render(entity, camera, directionalLight, pointLight, spotLight);
 	}
 
 	@Override
