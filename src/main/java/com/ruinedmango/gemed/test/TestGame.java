@@ -109,6 +109,12 @@ public class TestGame implements ILogic{
 		if(window.isKeyPressed(GLFW.GLFW_KEY_X)) {
 			cameraInc.y = 1;
 		}
+		if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			Consts.CAMERA_SPEED = 0.2f;
+		}
+		if(window.isKeyReleased(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			Consts.CAMERA_SPEED = 0.05f;
+		}
 	}
 
 	@Override

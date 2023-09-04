@@ -106,6 +106,9 @@ public class WindowManager {
 	public boolean isKeyPressed(int keycode) {
 		return GLFW.glfwGetKey(window, keycode) == GLFW.GLFW_PRESS;
 	}
+	public boolean isKeyReleased(int keycode) {
+		return GLFW.glfwGetKey(window, keycode) == GLFW.GLFW_RELEASE;
+	}
 	
 	public boolean windowShouldClose() {
 		return GLFW.glfwWindowShouldClose(window);
