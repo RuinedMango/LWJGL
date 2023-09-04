@@ -120,7 +120,7 @@ public class TestGame implements ILogic{
 	@Override
 	public void update(MouseInput mouseInput) {
 		camera.movePosition(cameraInc.x * Consts.CAMERA_SPEED,cameraInc.y * Consts.CAMERA_SPEED,cameraInc.z * Consts.CAMERA_SPEED);
-		
+		camera.getRotation().x = Math.max(-85.0f, Math.min(camera.getRotation().x, 85.0f));
 		if(mouseInput.isRightButtonPress()) {
 			Vector2f rotVec = mouseInput.getDisplVec();
 			camera.moveRotation(rotVec.x * Consts.MOUSE_SENSITIVITY, rotVec.y * Consts.MOUSE_SENSITIVITY, 0);
