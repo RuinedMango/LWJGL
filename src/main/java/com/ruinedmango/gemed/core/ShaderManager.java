@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
 import main.java.com.ruinedmango.gemed.core.entity.Material;
+import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 
 public class ShaderManager {
 	private final int programID;
@@ -32,6 +33,12 @@ public class ShaderManager {
 			throw new Exception("Could not load uniform " + uniformName);
 		}
 		uniforms.put(uniformName, uniformLocation);
+	}
+	
+	public void createDirectionalLightUniform(String uniformName)throws Exception {
+		createUniform(uniformName + ".colour");
+		createUniform(uniformName + ".direction");
+		createUniform(uniformName + ".intensity");
 	}
 	
 	public void createMaterialUniform(String uniformName) throws Exception{
@@ -78,6 +85,12 @@ public class ShaderManager {
 		setUniform(uniformName + ".specular", material.getSpecularColour());
 		setUniform(uniformName + ".hasTexture", material.hasTexture() ? 1 : 0);
 		setUniform(uniformName + ".reflectance", material.getReflectance());
+	}
+	
+	public void setUniform(String uniformName, DirectionalLight directionalLight) {
+		setUniform(uniformName + ".colour", directionalLight.getColour());
+		setUniform(uniformName + ".direction", directionalLight.getDirection());
+		setUniform(uniformName + ".intensity", directionalLight.getIntensity());
 	}
 	
 	public void createVertexShader(String shaderCode) throws Exception{

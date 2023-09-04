@@ -9,6 +9,7 @@ import main.java.com.ruinedmango.gemed.core.entity.Entity;
 import main.java.com.ruinedmango.gemed.core.utils.Consts;
 import main.java.com.ruinedmango.gemed.core.utils.Transformation;
 import main.java.com.ruinedmango.gemed.core.utils.Utils;
+import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 import main.java.com.ruinedmango.gemed.test.Launcher;
 
 
@@ -32,8 +33,10 @@ public class RenderManager {
 		shader.createUniform("viewMatrix");
 		shader.createUniform("ambientLight");
 		shader.createMaterialUniform("material");
+		shader.createUniform("specularPower");
+		shader.createDirectionalLightUniform("directionalLight");
 	}
-	public void render(Entity entity,Camera camera) {
+	public void render(Entity entity,Camera camera,DirectionalLight directionalLight) {
 		clear();
 		shader.bind();
 		shader.setUniform("textureSampler", 0);
@@ -42,6 +45,8 @@ public class RenderManager {
 		shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
 		shader.setUniform("material", entity.getModel().getMaterial());
 		shader.setUniform("ambientLight", Consts.AMBIENT_LIGHT);
+		shader.setUniform("specularPower", Consts.SPECULAR_POWER);
+		shader.setUniform("directionalLight", directionalLight);
 		GL30.glBindVertexArray(entity.getModel().getId());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);

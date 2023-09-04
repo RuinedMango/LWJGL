@@ -15,6 +15,7 @@ import main.java.com.ruinedmango.gemed.core.entity.Entity;
 import main.java.com.ruinedmango.gemed.core.entity.Model;
 import main.java.com.ruinedmango.gemed.core.entity.Texture;
 import main.java.com.ruinedmango.gemed.core.utils.Consts;
+import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 
 
 
@@ -29,12 +30,16 @@ public class TestGame implements ILogic{
 	
 	Vector3f cameraInc;
 	
+	public float lightAngle;
+	private DirectionalLight directionalLight;
+	
 	public TestGame() {
 		renderer = new RenderManager();
 		window = Launcher.getWindow();
 		loader = new ObjectLoader();
 		camera = new Camera();
 		cameraInc = new Vector3f(0,0,0);
+		lightAngle = -90;
 	}
 	
 	@Override
@@ -44,6 +49,11 @@ public class TestGame implements ILogic{
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
 		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
 		entity = new Entity(model,new Vector3f(0,0,-5),new Vector3f(0,0,0),1);
+		
+		float lightIntensity = 0.0f;
+		Vector3f lightPosition = new Vector3f(-1,-10,0);
+		Vector3f lightColour = new Vector3f(1,1,1);
+		directionalLight = new DirectionalLight(lightColour,lightPosition,lightIntensity);
 	}
 
 	@Override
@@ -77,7 +87,26 @@ public class TestGame implements ILogic{
 			Vector2f rotVec = mouseInput.getDisplVec();
 			camera.moveRotation(rotVec.x * Consts.MOUSE_SENSITIVITY, rotVec.y * Consts.MOUSE_SENSITIVITY, 0);
 		}
-		entity.incRotation(0, 0.25f, 0);
+		//entity.incRotation(0, 0.25f, 0);
+		lightAngle += 0.5f;
+		if(lightAngle > 90) {
+			directionalLight.setIntensity(0);
+			if(lightAngle >= 360) {
+				lightAngle = -90;
+			}
+		}else if(lightAngle <= -80 || lightAngle >= 80){
+			float factor = 1 - (Math.abs(lightAngle) - 80) / 10.0f;
+			directionalLight.getColour().y = Math.max(factor, 0.9f);
+			directionalLight.getColour().z = Math.max(factor, 0.5f);
+		}else {
+			directionalLight.setIntensity(1);
+			directionalLight.getColour().x = 1;
+			directionalLight.getColour().y = 1;
+			directionalLight.getColour().z = 1;
+		}
+		double angRad = Math.toRadians(lightAngle);
+		directionalLight.getDirection().x = (float) Math.sin(angRad);
+		directionalLight.getDirection().y = (float) Math.cos(angRad);
 	}
 
 	@Override
@@ -86,7 +115,7 @@ public class TestGame implements ILogic{
 			GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
 			window.setResize(true);
 		}
-		renderer.render(entity, camera);
+		renderer.render(entity, camera, directionalLight);
 	}
 
 	@Override
