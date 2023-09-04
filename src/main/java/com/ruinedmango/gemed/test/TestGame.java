@@ -1,5 +1,9 @@
 package main.java.com.ruinedmango.gemed.test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -27,7 +31,7 @@ public class TestGame implements ILogic{
 	private final ObjectLoader loader;
 	private final WindowManager window;
 	
-	private Entity entity;
+	private List<Entity> entities;
 	private Camera camera;
 	
 	Vector3f cameraInc;
@@ -49,12 +53,21 @@ public class TestGame implements ILogic{
 	@Override
 	public void init() throws Exception {
 		renderer.init();
-
+		
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
 		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
-		entity = new Entity(model,new Vector3f(0,0,-5),new Vector3f(0,0,0),1);
+		
+		entities = new ArrayList<>();
+		Random rnd = new Random();
+		for(int i = 0; i < 200; i++) {
+			float x = rnd.nextFloat() * 100 - 50;
+			float y = rnd.nextFloat() * 100 - 50;
+			float z = rnd.nextFloat() * -300;
+			entities.add(new Entity(model,new Vector3f(x,y,z),new Vector3f(rnd.nextFloat() * 180, rnd.nextFloat() * 180,0),1));
+		}
+		entities.add(new Entity(model, new Vector3f(0,0,-2f), new Vector3f(0,0,0), 1));
 		//point light
-		float lightIntensity = 20.0f;
+		float lightIntensity = 5.0f;
 		Vector3f lightPosition = new Vector3f(0,0,0);
 		Vector3f lightColour = new Vector3f(1,1,1);
 		PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity, 0,0,1);
@@ -96,18 +109,6 @@ public class TestGame implements ILogic{
 		if(window.isKeyPressed(GLFW.GLFW_KEY_X)) {
 			cameraInc.y = 1;
 		}
-		if(window.isKeyPressed(GLFW.GLFW_KEY_O)) {
-			pointLights[0].getPosition().x += 0.1f;
-		}
-		if(window.isKeyPressed(GLFW.GLFW_KEY_P)) {
-			pointLights[0].getPosition().x -= 0.1f;
-		}
-		if(window.isKeyPressed(GLFW.GLFW_KEY_L)) {
-			pointLights[0].getPosition().y += 0.1f;
-		}
-		if(window.isKeyPressed(GLFW.GLFW_KEY_K)) {
-			pointLights[0].getPosition().y -= 0.1f;
-		}
 	}
 
 	@Override
@@ -138,6 +139,13 @@ public class TestGame implements ILogic{
 		double angRad = Math.toRadians(lightAngle);
 		directionalLight.getDirection().x = (float) Math.sin(angRad);
 		directionalLight.getDirection().y = (float) Math.cos(angRad);
+		
+		for(Entity entity : entities) {
+			renderer.processEntity(entity);
+		}
+		pointLights[0].getPosition().x = camera.getPosition().x;
+		pointLights[0].getPosition().y = camera.getPosition().y;
+		pointLights[0].getPosition().z = camera.getPosition().z;
 	}
 
 	@Override
@@ -146,7 +154,7 @@ public class TestGame implements ILogic{
 			GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
 			window.setResize(true);
 		}
-		renderer.render(entity, camera, directionalLight, pointLights, spotLights);
+		renderer.render(camera, directionalLight, pointLights, spotLights);
 	}
 
 	@Override
