@@ -36,7 +36,7 @@ public class ShaderManager {
 		uniforms.put(uniformName, uniformLocation);
 	}
 	
-	public void createDirectionalLightUniform(String uniformName)throws Exception {
+	public void createDirectionalLightUniform(String uniformName) throws Exception {
 		createUniform(uniformName + ".colour");
 		createUniform(uniformName + ".direction");
 		createUniform(uniformName + ".intensity");
