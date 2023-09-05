@@ -15,8 +15,10 @@ import main.java.com.ruinedmango.gemed.core.MouseInput;
 import main.java.com.ruinedmango.gemed.core.ObjectLoader;
 import main.java.com.ruinedmango.gemed.core.WindowManager;
 import main.java.com.ruinedmango.gemed.core.entity.Entity;
+import main.java.com.ruinedmango.gemed.core.entity.Material;
 import main.java.com.ruinedmango.gemed.core.entity.Model;
 import main.java.com.ruinedmango.gemed.core.entity.Texture;
+import main.java.com.ruinedmango.gemed.core.entity.terrain.Terrain;
 import main.java.com.ruinedmango.gemed.core.utils.Consts;
 import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 import main.java.com.ruinedmango.gemed.lighting.PointLight;
@@ -32,6 +34,7 @@ public class TestGame implements ILogic{
 	private final WindowManager window;
 	
 	private List<Entity> entities;
+	private List<Terrain> terrains;
 	private Camera camera;
 	
 	Vector3f cameraInc;
@@ -57,10 +60,16 @@ public class TestGame implements ILogic{
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
 		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
 		
+		terrains = new ArrayList<>();
+		Terrain terrain = new Terrain(new Vector3f(0,-1,-800), loader, new Material(new Texture(loader.loadTexture("textures/terrain.png")), 0.1f));
+		Terrain terrain2 = new Terrain(new Vector3f(-800,-1,-800), loader, new Material(new Texture(loader.loadTexture("textures/flowers.png")), 0.1f));
+		terrains.add(terrain);
+		terrains.add(terrain2);
+		
 		entities = new ArrayList<>();
 		Random rnd = new Random();
 		for(int i = 0; i < 200; i++) {
-			float x = rnd.nextFloat() * 100 - 50;
+			float x = 100;
 			float y = rnd.nextFloat() * 100 - 50;
 			float z = rnd.nextFloat() * -300;
 			entities.add(new Entity(model,new Vector3f(x,y,z),new Vector3f(rnd.nextFloat() * 180, rnd.nextFloat() * 180,0),1));
@@ -86,6 +95,7 @@ public class TestGame implements ILogic{
 		
 		pointLights = new PointLight[]{pointLight};
 		spotLights = new SpotLight[]{spotLight, spotLight1};
+		pointLights[0].setColour(new Vector3f(255,0,0));
 	}
 
 	@Override
@@ -149,9 +159,13 @@ public class TestGame implements ILogic{
 		for(Entity entity : entities) {
 			renderer.processEntity(entity);
 		}
+		for(Terrain terrain : terrains) {
+			renderer.processTerrain(terrain);
+		}
 		pointLights[0].getPosition().x = camera.getPosition().x;
 		pointLights[0].getPosition().y = camera.getPosition().y;
 		pointLights[0].getPosition().z = camera.getPosition().z;
+
 	}
 
 	@Override

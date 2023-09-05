@@ -15,6 +15,7 @@ import main.java.com.ruinedmango.gemed.core.ShaderManager;
 import main.java.com.ruinedmango.gemed.core.WindowManager;
 import main.java.com.ruinedmango.gemed.core.entity.Entity;
 import main.java.com.ruinedmango.gemed.core.entity.Model;
+import main.java.com.ruinedmango.gemed.core.entity.terrain.Terrain;
 import main.java.com.ruinedmango.gemed.core.utils.Consts;
 import main.java.com.ruinedmango.gemed.core.utils.Transformation;
 import main.java.com.ruinedmango.gemed.core.utils.Utils;
@@ -27,7 +28,8 @@ import main.java.com.ruinedmango.gemed.test.Launcher;
 
 public class RenderManager {
 	private final WindowManager window;
-	private EntityRender entityRenderer;
+	private EntityRenderer entityRenderer;
+	private TerrainRenderer terrainRenderer;
 	
 	
 	public RenderManager() {
@@ -35,8 +37,10 @@ public class RenderManager {
 	}
 	
 	public void init() throws Exception {
-		entityRenderer = new EntityRender();
+		entityRenderer = new EntityRenderer();
+		terrainRenderer = new TerrainRenderer();
 		entityRenderer.init();
+		terrainRenderer.init();
 	}
 	
 	public static void renderLights(PointLight[] pointLights, SpotLight[] spotLights, DirectionalLight directionalLight, ShaderManager shader) {
@@ -57,6 +61,7 @@ public class RenderManager {
 		clear();
 		
 		entityRenderer.render(camera, pointLights, spotLights, directionalLight);
+		terrainRenderer.render(camera, pointLights, spotLights, directionalLight);
 		
 	}
 	public void processEntity(Entity entity) {
@@ -69,10 +74,14 @@ public class RenderManager {
 			entityRenderer.getEntities().put(entity.getModel(), newEntityList);
 		}
 	}
+	public void processTerrain(Terrain terrain) {
+		terrainRenderer.getTerrains().add(terrain);
+	}
 	public void clear() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	}
 	public void cleanup() {
 		entityRenderer.cleanup();
+		terrainRenderer.cleanup();
 	}
 }

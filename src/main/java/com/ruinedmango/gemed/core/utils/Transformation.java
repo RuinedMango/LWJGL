@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 
 import main.java.com.ruinedmango.gemed.core.Camera;
 import main.java.com.ruinedmango.gemed.core.entity.Entity;
+import main.java.com.ruinedmango.gemed.core.entity.terrain.Terrain;
 
 public class Transformation {
 
@@ -15,6 +16,12 @@ public class Transformation {
 			rotateY((float) Math.toRadians(entity.getRotation().y)).
 			rotateZ((float) Math.toRadians(entity.getRotation().z)).
 			scale(entity.getScale());
+		return matrix;
+	}
+	
+	public static Matrix4f createTransformationMatrix(Terrain terrain) {
+		Matrix4f matrix = new Matrix4f();
+		matrix.identity().translate(terrain.getPosition()).scale(1);
 		return matrix;
 	}
 	
