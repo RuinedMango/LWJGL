@@ -13,7 +13,6 @@ import main.java.com.ruinedmango.gemed.core.Camera;
 import main.java.com.ruinedmango.gemed.core.ILogic;
 import main.java.com.ruinedmango.gemed.core.MouseInput;
 import main.java.com.ruinedmango.gemed.core.ObjectLoader;
-import main.java.com.ruinedmango.gemed.core.RenderManager;
 import main.java.com.ruinedmango.gemed.core.WindowManager;
 import main.java.com.ruinedmango.gemed.core.entity.Entity;
 import main.java.com.ruinedmango.gemed.core.entity.Model;
@@ -22,6 +21,7 @@ import main.java.com.ruinedmango.gemed.core.utils.Consts;
 import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 import main.java.com.ruinedmango.gemed.lighting.PointLight;
 import main.java.com.ruinedmango.gemed.lighting.SpotLight;
+import main.java.com.ruinedmango.gemed.rendering.RenderManager;
 
 
 
