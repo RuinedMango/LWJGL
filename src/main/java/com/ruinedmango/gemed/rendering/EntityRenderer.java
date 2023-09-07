@@ -21,7 +21,7 @@ import main.java.com.ruinedmango.gemed.lighting.PointLight;
 import main.java.com.ruinedmango.gemed.lighting.SpotLight;
 import main.java.com.ruinedmango.gemed.test.Launcher;
 
-public class EntityRenderer implements IRenderer{
+public class EntityRenderer implements IRenderer<Object>{
 	
 	ShaderManager shader;
 	private Map<Model, List<Entity>> entities;

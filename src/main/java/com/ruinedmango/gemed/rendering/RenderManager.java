@@ -1,24 +1,14 @@
 package main.java.com.ruinedmango.gemed.rendering;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-
 import main.java.com.ruinedmango.gemed.core.Camera;
 import main.java.com.ruinedmango.gemed.core.ShaderManager;
-import main.java.com.ruinedmango.gemed.core.WindowManager;
 import main.java.com.ruinedmango.gemed.core.entity.Entity;
-import main.java.com.ruinedmango.gemed.core.entity.Model;
+import main.java.com.ruinedmango.gemed.core.entity.SceneManager;
 import main.java.com.ruinedmango.gemed.core.entity.terrain.Terrain;
 import main.java.com.ruinedmango.gemed.core.utils.Consts;
-import main.java.com.ruinedmango.gemed.core.utils.Transformation;
-import main.java.com.ruinedmango.gemed.core.utils.Utils;
 import main.java.com.ruinedmango.gemed.lighting.DirectionalLight;
 import main.java.com.ruinedmango.gemed.lighting.PointLight;
 import main.java.com.ruinedmango.gemed.lighting.SpotLight;
@@ -27,13 +17,12 @@ import main.java.com.ruinedmango.gemed.test.Launcher;
 
 
 public class RenderManager {
-	private final WindowManager window;
 	private EntityRenderer entityRenderer;
 	private TerrainRenderer terrainRenderer;
 	
 	
 	public RenderManager() {
-		window = Launcher.getWindow();
+		Launcher.getWindow();
 	}
 	
 	public void init() throws Exception {
@@ -57,11 +46,11 @@ public class RenderManager {
 		shader.setUniform("directionalLight", directionalLight);
 	}
 	
-	public void render(Camera camera,DirectionalLight directionalLight, PointLight[] pointLights, SpotLight[] spotLights) {
+	public void render(Camera camera,SceneManager sceneManager) {
 		clear();
 		
-		entityRenderer.render(camera, pointLights, spotLights, directionalLight);
-		terrainRenderer.render(camera, pointLights, spotLights, directionalLight);
+		entityRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
+		terrainRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
 		
 	}
 	public void processEntity(Entity entity) {

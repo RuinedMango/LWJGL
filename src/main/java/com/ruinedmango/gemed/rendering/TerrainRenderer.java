@@ -1,10 +1,7 @@
 package main.java.com.ruinedmango.gemed.rendering;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -12,7 +9,6 @@ import org.lwjgl.opengl.GL30;
 
 import main.java.com.ruinedmango.gemed.core.Camera;
 import main.java.com.ruinedmango.gemed.core.ShaderManager;
-import main.java.com.ruinedmango.gemed.core.entity.Entity;
 import main.java.com.ruinedmango.gemed.core.entity.Model;
 import main.java.com.ruinedmango.gemed.core.entity.terrain.Terrain;
 import main.java.com.ruinedmango.gemed.core.utils.Consts;
@@ -23,7 +19,7 @@ import main.java.com.ruinedmango.gemed.lighting.PointLight;
 import main.java.com.ruinedmango.gemed.lighting.SpotLight;
 import main.java.com.ruinedmango.gemed.test.Launcher;
 
-public class TerrainRenderer implements IRenderer{
+public class TerrainRenderer implements IRenderer<Object>{
 	
 	ShaderManager shader;
 	private List<Terrain> terrains;
