@@ -38,7 +38,12 @@ struct SpotLight{
 	float cutoff;
 };
 
-uniform sampler2D textureSampler;
+uniform sampler2D backgroundTexture;
+uniform sampler2D redTexture;
+uniform sampler2D greenTexture;
+uniform sampler2D blueTexture;
+uniform sampler2D blendMap;
+
 uniform vec3 ambientLight;
 uniform Material material;
 uniform float specularPower;
@@ -49,6 +54,27 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 vec4 ambientC;
 vec4 diffuseC;
 vec4 specularC;
+
+void setupColours(Material material, vec2 textCoord){
+	if(material.hasTexture == 0){
+
+		vec4 blendMapColour = texture(blendMap, textCoord);
+		float backgroundTextureAmount = 1 - (blendMapColour.r + blendMapColour.g + blendMapColour.b);
+		vec2 tiledCoords = textCoord / 2.5f;
+		vec4 backgroundTextureColour = texture(backgroundTexture, tiledCoords) * backgroundTextureAmount;
+		vec4 redTextureColour = texture(redTexture, tiledCoords) * blendMapColour.r;
+		vec4 greenTextureColour = texture(greenTexture, tiledCoords) * blendMapColour.g;
+		vec4 blueTextureColour = texture(blueTexture, tiledCoords) * blendMapColour.b;
+
+		ambientC = backgroundTextureColour + redTextureColour + greenTextureColour + blueTextureColour;
+		diffuseC = ambientC;
+		specularC = ambientC;
+	}else{
+		ambientC = material.ambient;
+		diffuseC = material.diffuse;
+		specularC = material.specular;
+	}
+}
 
 vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal){
 	vec4 diffuseColour = vec4(0,0,0,0);
@@ -98,15 +124,7 @@ vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal){
 }
 
 void main(){
-	if(material.hasTexture == 1){
-		ambientC = texture(textureSampler, fragTextureCoord);
-		diffuseC = ambientC;
-		specularC = ambientC;
-	}else{
-		ambientC = material.ambient;
-		diffuseC = material.diffuse;
-		specularC = material.specular;
-	}
+	setupColours(material, fragTextureCoord);
 	vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, fragPos, fragNormal);
 	for(int i = 0; i < MAX_POINT_LIGHTS; i++){
 		if(pointLights[i].intensity > 0){

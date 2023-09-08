@@ -33,8 +33,8 @@ public class EntityRenderer implements IRenderer<Object>{
 	
 	@Override
 	public void init() throws Exception {
-		shader.createVertexShader(Utils.loadResource("/shaders/entity_vertex.vs"));
-		shader.createFragmentShader(Utils.loadResource("/shaders/entity_fragment.fs"));
+		shader.createVertexShader(Utils.loadResource("/shaders/entity_vertex.vsh"));
+		shader.createFragmentShader(Utils.loadResource("/shaders/entity_fragment.fsh"));
 		shader.link();
 		shader.createUniform("textureSampler");
 		shader.createUniform("transformationMatrix");
