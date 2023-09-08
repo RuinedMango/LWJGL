@@ -8,7 +8,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Netty"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL Windows Natives"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL"/>
-	<classpathentry excluding="main/resources/" kind="src" path="src"/>
-	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry excluding="resources/" kind="src" path="src"/>
+	<classpathentry kind="src" path="src/resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
