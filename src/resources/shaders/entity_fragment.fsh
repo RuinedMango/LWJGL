@@ -135,7 +135,7 @@ void main(){
 		}
 	}
 	if(fog.active == 1){
-		fragColour = calcFog(fragPos, fragColour, fog);
+		fragColour =  calcFog(fragPos, fragColour, fog) * vec4(ambientLight, 1) + diffuseSpecularComp;
 	}else{
 		fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 	}

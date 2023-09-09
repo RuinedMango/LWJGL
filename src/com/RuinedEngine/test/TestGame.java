@@ -48,7 +48,7 @@ public class TestGame implements ILogic{
 	private SoundSource soundSource;
 	private SoundManager soundManager;
 	private Entity selectedEntity;
-	private Fog fog;
+	private static Fog fog;
 	
 	public TestGame() {
 		renderer = new RenderManager();
@@ -57,7 +57,7 @@ public class TestGame implements ILogic{
 		camera = new Camera();
 		cameraInc = new Vector3f(0,0,0);
 		sceneManager = new SceneManager(-90);
-		
+		fog = new Fog(true, new Vector3f(1.94f, 1.78f, 1.28f),0.5f);
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class TestGame implements ILogic{
 		
 		
 		//point light
-		float lightIntensity = 1f;
+		float lightIntensity = 0.5f;
 		Vector3f lightPosition = new Vector3f(0,0,0);
 		Vector3f lightColour = new Vector3f(1,1,1);
 		PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity, 0,0,1);
@@ -156,7 +156,6 @@ public class TestGame implements ILogic{
 
 	@Override
 	public void update(MouseInput mouseInput) {
-		Fog fog = new Fog(true, new Vector3f(0.5f, 0.5f, 255f),900f);
 		soundManager.updateListenerPosition(camera);
 		camera.movePosition(cameraInc.x * Consts.CAMERA_SPEED,cameraInc.y * Consts.CAMERA_SPEED,cameraInc.z * Consts.CAMERA_SPEED);
 		camera.getRotation().x = Math.max(-85.0f, Math.min(camera.getRotation().x, 85.0f));
@@ -164,26 +163,6 @@ public class TestGame implements ILogic{
 			Vector2f rotVec = mouseInput.getDisplVec();
 			camera.moveRotation(rotVec.x * Consts.MOUSE_SENSITIVITY, rotVec.y * Consts.MOUSE_SENSITIVITY, 0);
 		}
-		sceneManager.setLightAngle(sceneManager.getLightAngle() + 0.5f);
-		if(sceneManager.getLightAngle() > 90) {
-			sceneManager.getDirectionalLight().setIntensity(0);
-			if(sceneManager.getLightAngle() >= 360) {
-				sceneManager.setLightAngle(-90);
-			}
-		}else if(sceneManager.getLightAngle() <= -80 || sceneManager.getLightAngle() >= 80){
-			float factor = 1 - (Math.abs(sceneManager.getLightAngle()) - 80) / 10.0f;
-			sceneManager.getDirectionalLight().getColour().y = Math.max(factor, 0.9f);
-			sceneManager.getDirectionalLight().getColour().z = Math.max(factor, 0.5f);
-		}else {
-			sceneManager.getDirectionalLight().setIntensity(1);
-			sceneManager.getDirectionalLight().getColour().x = 1;
-			sceneManager.getDirectionalLight().getColour().y = 1;
-			sceneManager.getDirectionalLight().getColour().z = 1;
-		}
-		double angRad = Math.toRadians(sceneManager.getLightAngle());
-		sceneManager.getDirectionalLight().getDirection().x = (float) Math.sin(angRad);
-		sceneManager.getDirectionalLight().getDirection().y = (float) Math.cos(angRad);
-		
 		for(Entity entity : sceneManager.getEntities()) {
 			renderer.processEntity(entity);
 		}
@@ -193,7 +172,7 @@ public class TestGame implements ILogic{
 		sceneManager.getPointLights()[0].getPosition().x = camera.getPosition().x;
 		sceneManager.getPointLights()[0].getPosition().y = camera.getPosition().y;
 		sceneManager.getPointLights()[0].getPosition().z = camera.getPosition().z;
-
+		
 
 	}
 
@@ -217,5 +196,8 @@ public class TestGame implements ILogic{
 	}
 	public void setSelectedEntity(Entity selectedEntity) {
 		this.selectedEntity = selectedEntity;
+	}
+	public static Fog getFog() {
+		return fog;
 	}
 }

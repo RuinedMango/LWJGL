@@ -17,6 +17,7 @@ import com.RuinedEngine.lighting.DirectionalLight;
 import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.lighting.SpotLight;
 import com.RuinedEngine.test.Launcher;
+import com.RuinedEngine.test.TestGame;
 import com.RuinedEngine.utils.Consts;
 import com.RuinedEngine.utils.Transformation;
 import com.RuinedEngine.utils.Utils;
@@ -43,6 +44,7 @@ public class EntityRenderer implements IRenderer<Object>{
 		shader.createUniform("ambientLight");
 		shader.createMaterialUniform("material");
 		shader.createUniform("specularPower");
+		shader.createFogUniform("fog");
 		shader.createDirectionalLightUniform("directionalLight");
 		shader.createPointLightListUniform("pointLights", Consts.MAX_POINT_LIGHTS);
 		shader.createSpotLightListUniform("spotLights", Consts.MAX_SPOT_LIGHTS);
@@ -88,6 +90,7 @@ public class EntityRenderer implements IRenderer<Object>{
 
 	@Override
 	public void prepare(Object entity, Camera camera) {
+		shader.setUniform("fog", TestGame.getFog());
 		shader.setUniform("textureSampler", 0);
 		shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix((Entity) entity));
 		shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
