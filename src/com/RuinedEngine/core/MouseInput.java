@@ -13,7 +13,7 @@ public class MouseInput {
 	private final Vector2f displVec;
 	
 	private boolean inWindow = false;
-	private static boolean leftButtonPress = false;
+	private boolean leftButtonPress = false;
 	private boolean rightButtonPress = false;
 	
 	public MouseInput() {
@@ -58,7 +58,7 @@ public class MouseInput {
 		return displVec;
 	}
 
-	public static boolean isLeftButtonPress() {
+	public boolean isLeftButtonPress() {
 		return leftButtonPress;
 	}
 

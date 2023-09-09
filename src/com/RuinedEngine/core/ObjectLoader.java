@@ -96,7 +96,7 @@ public class ObjectLoader {
 		return loadModel(verticesArr,texCoordArr, normalArr, indicesArr);
 	}
 	
-	private static void processVertex(int pos,int texCoord,int normal, List<Vector2f> texCoordList,
+	private void processVertex(int pos,int texCoord,int normal, List<Vector2f> texCoordList,
 										List<Vector3f> normalList, List<Integer> indicesList,float[] texCoordArr
 										,float[] normalArr){
 		indicesList.add(pos);
@@ -113,7 +113,7 @@ public class ObjectLoader {
 		}
 	}
 	
-	private static void processFace(String token, List<Vector3i> faces) {
+	private void processFace(String token, List<Vector3i> faces) {
 		String[] lineToken = token.split("/");
 		int length = lineToken.length;
 		int pos = -1;

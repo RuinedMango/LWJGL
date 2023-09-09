@@ -25,8 +25,8 @@ public class SceneManager {
 	private float spotInc = 1;
 	
 	public SceneManager(float lightAngle) {
-		entities = new ArrayList<Entity>();
-		terrains = new ArrayList<Terrain>();
+		entities = new ArrayList<>();
+		terrains = new ArrayList<>();
 		ambientLight = Consts.AMBIENT_LIGHT;
 		this.lightAngle = lightAngle;
 	}

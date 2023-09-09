@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.joml.Intersectionf;
-import org.joml.Matrix4f;
-import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -35,7 +32,6 @@ import com.RuinedEngine.lighting.DirectionalLight;
 import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.rendering.RenderManager;
 import com.RuinedEngine.utils.Consts;
-import com.RuinedEngine.utils.Transformation;
 
 
 
