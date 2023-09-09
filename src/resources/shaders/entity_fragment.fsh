@@ -119,10 +119,7 @@ void main(){
 			diffuseSpecularComp = calcSpotLight(spotLights[i], fragPos, fragNormal);
 		}
 	}
-	if(outSelected > 0){
-		fragColour = vec4(fragColour.x, fragColour.y, 1, 1)
-	}else{
-		fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
-	}
+
+	fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 
 }

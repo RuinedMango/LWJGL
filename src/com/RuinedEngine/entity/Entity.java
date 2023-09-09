@@ -35,6 +35,12 @@ public class Entity {
 		this.rotation.y = y;
 		this.rotation.z = z;
 	}
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+	public boolean getSelected() {
+		return selected;
+	}
 
 	public Model getModel() {
 		return model;

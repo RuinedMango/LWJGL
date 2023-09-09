@@ -36,4 +36,16 @@ public class Transformation {
 		matrix.translate(-pos.x,-pos.y,-pos.z);
 		return matrix;
 	}
+	public static Matrix4f getInvViewMatrix(Camera camera) {
+		Vector3f pos = camera.getPosition();
+		Vector3f rot = camera.getRotation();
+		Matrix4f invViewMatrix = new Matrix4f();
+		invViewMatrix.identity()
+			.rotateX(rot.x)
+			.rotateY(rot.y)
+			.translate(-pos.x,-pos.y,-pos.z);
+		invViewMatrix.set(getInvViewMatrix(camera)).invert();
+		
+		return invViewMatrix;
+	}
 }

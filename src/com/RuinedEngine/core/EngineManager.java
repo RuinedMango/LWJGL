@@ -2,6 +2,7 @@ package com.RuinedEngine.core;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 
+import com.RuinedEngine.entity.SceneManager;
 import com.RuinedEngine.test.Launcher;
 import com.RuinedEngine.utils.Consts;
 
@@ -90,7 +91,7 @@ public class EngineManager {
 	
 	private void input() {
 		mouseInput.input();
-		gameLogic.input();
+		gameLogic.input(window, new SceneManager(-90f));
 	}
 	private void render() {
 		gameLogic.render();

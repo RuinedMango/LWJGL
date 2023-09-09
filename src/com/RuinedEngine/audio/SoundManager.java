@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
@@ -15,6 +16,7 @@ import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 
 import com.RuinedEngine.core.Camera;
+import com.RuinedEngine.utils.Transformation;
 
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -42,7 +44,13 @@ public class SoundManager {
 		AL.createCapabilities(deviceCaps);
 	}
 	public void updateListenerPosition(Camera camera) {
+		Matrix4f viewMatrix = Transformation.getViewMatrix(camera);
 		listener.setPosition(camera.getPosition());
+		Vector3f at = new Vector3f();
+		viewMatrix.positiveZ(at).negate();
+		Vector3f up = new Vector3f();
+		viewMatrix.positiveY(up);
+		listener.setOrientation(at, up);
 	}
 	public void addSoundBuffer(SoundBuffer soundBuffer) {
 		this.soundBufferList.add(soundBuffer);

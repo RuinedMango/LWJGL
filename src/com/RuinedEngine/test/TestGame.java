@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.joml.Intersectionf;
+import org.joml.Matrix4f;
+import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -32,6 +35,7 @@ import com.RuinedEngine.lighting.DirectionalLight;
 import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.rendering.RenderManager;
 import com.RuinedEngine.utils.Consts;
+import com.RuinedEngine.utils.Transformation;
 
 
 
@@ -46,6 +50,7 @@ public class TestGame implements ILogic{
 	Vector3f cameraInc;
 	private SoundSource soundSource;
 	private SoundManager soundManager;
+	private Entity selectedEntity;
 	
 	public TestGame() {
 		renderer = new RenderManager();
@@ -120,7 +125,7 @@ public class TestGame implements ILogic{
 	}
 
 	@Override
-	public void input() {
+	public void input(WindowManager windowManager, SceneManager sceneManager) {
 		cameraInc.set(0,0,0);
 		if(window.isKeyPressed(GLFW.GLFW_KEY_W)) {
 			cameraInc.z = -1;
@@ -147,9 +152,11 @@ public class TestGame implements ILogic{
 			Consts.CAMERA_SPEED = 0.05f;
 		}
 	}
+	
 
 	@Override
 	public void update(MouseInput mouseInput) {
+
 		soundManager.updateListenerPosition(camera);
 		camera.movePosition(cameraInc.x * Consts.CAMERA_SPEED,cameraInc.y * Consts.CAMERA_SPEED,cameraInc.z * Consts.CAMERA_SPEED);
 		camera.getRotation().x = Math.max(-85.0f, Math.min(camera.getRotation().x, 85.0f));
@@ -205,5 +212,10 @@ public class TestGame implements ILogic{
 		renderer.cleanup();
 		loader.cleanup();
 	}
-
+	public Entity getSelectedEntity() {
+		return selectedEntity;
+	}
+	public void setSelectedEntity(Entity selectedEntity) {
+		this.selectedEntity = selectedEntity;
+	}
 }

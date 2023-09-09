@@ -9,11 +9,11 @@ import com.RuinedEngine.test.Launcher;
 public class MouseInput {
 	
 	private final Vector2d previousPos;
-	private final Vector2d currentPos;
+	private static Vector2d currentPos;
 	private final Vector2f displVec;
 	
 	private boolean inWindow = false;
-	private boolean leftButtonPress = false;
+	private static boolean leftButtonPress = false;
 	private boolean rightButtonPress = false;
 	
 	public MouseInput() {
@@ -58,12 +58,16 @@ public class MouseInput {
 		return displVec;
 	}
 
-	public boolean isLeftButtonPress() {
+	public static boolean isLeftButtonPress() {
 		return leftButtonPress;
 	}
 
 	public boolean isRightButtonPress() {
 		return rightButtonPress;
+	}
+
+	public static Vector2d getCurrentPos() {
+		return currentPos;
 	}
 	
 }

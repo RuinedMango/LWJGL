@@ -50,5 +50,5 @@ public class Camera {
 	public Vector3f getRotation() {
 		return rotation;
 	}
-	
+
 }

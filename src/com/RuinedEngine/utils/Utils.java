@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
+
+import com.RuinedEngine.core.Camera;
 
 public class Utils {
 	public static FloatBuffer storeDataInFloatBuffer(float[] data) {
@@ -44,4 +48,18 @@ public class Utils {
 		}
 		return list;
 	}
+    public static Matrix4f createViewMatrix(Camera camera) {
+        Matrix4f viewMatrix = new Matrix4f();
+        viewMatrix.rotate((float) Math.toRadians(camera.getRotation().x), new Vector3f(1, 0, 0));
+        viewMatrix.rotate((float) Math.toRadians(camera.getRotation().y),   new Vector3f(0, 1, 0));
+        viewMatrix.rotate((float) Math.toRadians(camera.getRotation().z),  new Vector3f(0, 0, 1));
+        Vector3f cameraPos = camera.getPosition();
+        Vector3f negativeCameraPos = new Vector3f(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+        viewMatrix.translate(negativeCameraPos);
+
+        // Doesn't seem to work right without this transpose here for some reason.
+        viewMatrix.transpose();
+
+        return viewMatrix;
+    }
 }
