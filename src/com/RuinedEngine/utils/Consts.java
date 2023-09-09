@@ -15,5 +15,6 @@ public class Consts {
 	
 	public static final Vector3f AMBIENT_LIGHT = new Vector3f(0.3f,0.3f,0.3f);
 	public static final float SPECULAR_POWER = 10f;
+	public static boolean antiAlias = true;
 	
 }

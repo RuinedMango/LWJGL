@@ -41,6 +41,10 @@ public class Entity {
 	public boolean getSelected() {
 		return selected;
 	}
+	
+	public void setModel(Model model) {
+		this.model = model;
+	}
 
 	public Model getModel() {
 		return model;

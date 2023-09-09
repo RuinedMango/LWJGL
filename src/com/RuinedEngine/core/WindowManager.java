@@ -1,13 +1,15 @@
 package com.RuinedEngine.core;
 
+
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.system.*;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 
 public class WindowManager {
 	public static final float FOV = (float) Math.toRadians(60);
@@ -24,7 +26,6 @@ public class WindowManager {
 	private boolean vSync;
 	
 	private final Matrix4f projectionMatrix;
-	
 	public WindowManager(String title, int width, int height, boolean vSync) {
 		this.title = title;
 		this.width = width;
@@ -79,7 +80,6 @@ public class WindowManager {
 			GLFW.glfwSetWindowPos(window, (vidMode.width() - width) / 2, (vidMode.height() - height) / 2);
 		}
 		GLFW.glfwMakeContextCurrent(window);
-		
 		if(isvSync()) {
 			GLFW.glfwSwapInterval(1);
 		}
@@ -91,6 +91,7 @@ public class WindowManager {
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_BACK);
 	}
+	
 	
 	public void update() {
 		GLFW.glfwSwapBuffers(window);

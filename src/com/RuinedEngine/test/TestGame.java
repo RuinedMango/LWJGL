@@ -30,6 +30,7 @@ import com.RuinedEngine.entity.terrain.Terrain;
 import com.RuinedEngine.entity.terrain.TerrainTexture;
 import com.RuinedEngine.lighting.DirectionalLight;
 import com.RuinedEngine.lighting.PointLight;
+import com.RuinedEngine.rendering.Fog;
 import com.RuinedEngine.rendering.RenderManager;
 import com.RuinedEngine.utils.Consts;
 
@@ -47,6 +48,7 @@ public class TestGame implements ILogic{
 	private SoundSource soundSource;
 	private SoundManager soundManager;
 	private Entity selectedEntity;
+	private Fog fog;
 	
 	public TestGame() {
 		renderer = new RenderManager();
@@ -55,12 +57,14 @@ public class TestGame implements ILogic{
 		camera = new Camera();
 		cameraInc = new Vector3f(0,0,0);
 		sceneManager = new SceneManager(-90);
+		
 	}
 	
 	@Override
 	public void init() throws Exception {
 		
 		renderer.init();
+		
 		initSounds(camera.getPosition(), camera);
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
 		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
@@ -152,7 +156,7 @@ public class TestGame implements ILogic{
 
 	@Override
 	public void update(MouseInput mouseInput) {
-
+		Fog fog = new Fog(true, new Vector3f(0.5f, 0.5f, 255f),900f);
 		soundManager.updateListenerPosition(camera);
 		camera.movePosition(cameraInc.x * Consts.CAMERA_SPEED,cameraInc.y * Consts.CAMERA_SPEED,cameraInc.z * Consts.CAMERA_SPEED);
 		camera.getRotation().x = Math.max(-85.0f, Math.min(camera.getRotation().x, 85.0f));

@@ -13,6 +13,7 @@ import com.RuinedEngine.entity.Material;
 import com.RuinedEngine.lighting.DirectionalLight;
 import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.lighting.SpotLight;
+import com.RuinedEngine.rendering.Fog;
 
 public class ShaderManager {
 	private final int programID;
@@ -59,6 +60,12 @@ public class ShaderManager {
 		createUniform(uniformName + ".linear");
 		createUniform(uniformName + ".exponent");
 	}
+	public void createFogUniform(String uniformName) throws Exception{
+		createUniform(uniformName + ".active");
+		createUniform(uniformName + ".colour");
+		createUniform(uniformName + ".density");
+	}
+	
 	
 	public void createPointLightListUniform(String uniformName, int size) throws Exception{
 		for(int i = 0; i < size; i++) {
@@ -134,6 +141,11 @@ public class ShaderManager {
 		setUniform(uniformName + ".pl",spotLight.getPointLight());
 		setUniform(uniformName + ".conedir",spotLight.getConeDirection());
 		setUniform(uniformName + ".cutoff",spotLight.getCutoff());
+	}
+	public void setUniform(String uniformName, Fog fog) {
+		setUniform(uniformName + ".active", fog.isActive() ? 1 : 0);
+		setUniform(uniformName + ".colour", fog.getColour());
+		setUniform(uniformName + ".density", fog.getDensity());
 	}
 	
 	public void setUniform(String uniformName, PointLight[] pointLights) {
