@@ -7,6 +7,7 @@ public class Entity {
 	private Vector3f pos;
 	private Vector3f rotation;
 	private float scale;
+	private boolean selected;
 	public Entity(Model model, Vector3f pos, Vector3f rotation, float scale) {
 		this.model = model;
 		this.pos = pos;

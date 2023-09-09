@@ -1,11 +1,20 @@
 package com.RuinedEngine.test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.GL11;
 
+import com.RuinedEngine.audio.SoundBuffer;
+import com.RuinedEngine.audio.SoundListener;
+import com.RuinedEngine.audio.SoundManager;
+import com.RuinedEngine.audio.SoundSource;
 import com.RuinedEngine.core.Camera;
 import com.RuinedEngine.core.ILogic;
 import com.RuinedEngine.core.MouseInput;
@@ -13,7 +22,9 @@ import com.RuinedEngine.core.ObjectLoader;
 import com.RuinedEngine.core.WindowManager;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Material;
+import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.SceneManager;
+import com.RuinedEngine.entity.Texture;
 import com.RuinedEngine.entity.terrain.BlendMapTerrain;
 import com.RuinedEngine.entity.terrain.Terrain;
 import com.RuinedEngine.entity.terrain.TerrainTexture;
@@ -26,12 +37,15 @@ import com.RuinedEngine.utils.Consts;
 
 public class TestGame implements ILogic{
 	
+	private List<Entity> entities;
 	private final RenderManager renderer;
 	private final ObjectLoader loader;
 	private final WindowManager window;
 	private Camera camera;
 	private SceneManager sceneManager;
 	Vector3f cameraInc;
+	private SoundSource soundSource;
+	private SoundManager soundManager;
 	
 	public TestGame() {
 		renderer = new RenderManager();
@@ -44,13 +58,28 @@ public class TestGame implements ILogic{
 	
 	@Override
 	public void init() throws Exception {
+		
 		renderer.init();
+		initSounds(camera.getPosition(), camera);
+		Model model = loader.loadOBJModel("/models/Fiat.obj");
+		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
 		
 		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("textures/terrain.png"));
 		TerrainTexture redTexture = new TerrainTexture(loader.loadTexture("textures/flowers.png"));
 		TerrainTexture greenTexture = new TerrainTexture(loader.loadTexture("textures/stone.png"));
 		TerrainTexture blueTexture = new TerrainTexture(loader.loadTexture("textures/dirt.png"));
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("textures/blendMap.png"));
+		entities = new ArrayList<>();
+		Random rnd = new Random();
+		for(int i = 0; i < 200; i++) {
+			float x1 = rnd.nextFloat() * 100;
+			float y1 = 5;
+			float z = rnd.nextFloat() * -300;
+			entities.add(new Entity(model,new Vector3f(x1,y1,z),new Vector3f(rnd.nextFloat() * 180, rnd.nextFloat() * 180,0),1));
+			sceneManager.addEntity(new Entity(model,new Vector3f(x1,y1,z),new Vector3f(rnd.nextFloat() * 180, rnd.nextFloat() * 180,0),1));
+		}
+		entities.add(new Entity(model, new Vector3f(0,0,-2f), new Vector3f(0,0,0), 1));
+		sceneManager.addEntity(new Entity(model, new Vector3f(0,0,-2f), new Vector3f(0,0,0), 1));
 		
 		BlendMapTerrain blendMapTerrain = new BlendMapTerrain(backgroundTexture, redTexture, greenTexture, blueTexture);
 		
@@ -74,7 +103,20 @@ public class TestGame implements ILogic{
 		
 		sceneManager.setPointLights(new PointLight[]{pointLight});
 		sceneManager.getPointLights()[0].setColour(new Vector3f(255,255,255));
+		soundSource.play();
+	}
+	
+	private void initSounds(Vector3f position,Camera camera) {
+		soundManager = new SoundManager();
+		soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
+		soundManager.setListener(new SoundListener(camera.getPosition()));
 		
+		SoundBuffer buffer = new SoundBuffer("sound/cool.ogg");
+		soundManager.addSoundBuffer(buffer);
+		soundSource = new SoundSource(false, false);
+		soundSource.setPosition(position);
+		soundSource.setBuffer(buffer.getBufferId());
+		soundManager.addSoundSource("CREAK", soundSource);
 	}
 
 	@Override
@@ -108,6 +150,7 @@ public class TestGame implements ILogic{
 
 	@Override
 	public void update(MouseInput mouseInput) {
+		soundManager.updateListenerPosition(camera);
 		camera.movePosition(cameraInc.x * Consts.CAMERA_SPEED,cameraInc.y * Consts.CAMERA_SPEED,cameraInc.z * Consts.CAMERA_SPEED);
 		camera.getRotation().x = Math.max(-85.0f, Math.min(camera.getRotation().x, 85.0f));
 		if(mouseInput.isRightButtonPress()) {
@@ -144,6 +187,7 @@ public class TestGame implements ILogic{
 		sceneManager.getPointLights()[0].getPosition().y = camera.getPosition().y;
 		sceneManager.getPointLights()[0].getPosition().z = camera.getPosition().z;
 
+
 	}
 
 	@Override
@@ -157,6 +201,7 @@ public class TestGame implements ILogic{
 
 	@Override
 	public void cleanup() {
+		soundManager.cleanup();
 		renderer.cleanup();
 		loader.cleanup();
 	}

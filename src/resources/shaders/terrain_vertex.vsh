@@ -11,6 +11,7 @@ out vec3 fragPos;
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+uniform sampler2D hieghtMap;
 
 void main(){
 	vec4 worldPos = transformationMatrix * vec4(position,1.0);

@@ -6,6 +6,7 @@ const int MAX_SPOT_LIGHTS = 5;
 in vec2 fragTextureCoord;
 in vec3 fragNormal;
 in vec3 fragPos;
+in float outSelected;
 
 out vec4 fragColour;
 
@@ -118,6 +119,10 @@ void main(){
 			diffuseSpecularComp = calcSpotLight(spotLights[i], fragPos, fragNormal);
 		}
 	}
+	if(outSelected > 0){
+		fragColour = vec4(fragColour.x, fragColour.y, 1, 1)
+	}else{
+		fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
+	}
 
-	fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 }

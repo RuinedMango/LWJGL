@@ -15,6 +15,7 @@ public class Terrain {
 	private Vector3f position;
 	private Model model;
 	public TerrainTexture blendMap;
+	public TerrainTexture hieghtMap;
 	public BlendMapTerrain blendMapTerrain;
 	
 	public Terrain(Vector3f position, ObjectLoader loader, Material material,BlendMapTerrain blendMapTerrain, TerrainTexture blendMap) {
@@ -86,6 +87,10 @@ public class Terrain {
 
 	public BlendMapTerrain getBlendMapTerrain() {
 		return blendMapTerrain;
+	}
+
+	public TerrainTexture getHieghtMap() {
+		return hieghtMap;
 	}
 	
 }
