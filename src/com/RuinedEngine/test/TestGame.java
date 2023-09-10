@@ -3,6 +3,8 @@ package com.RuinedEngine.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -38,7 +40,7 @@ import com.RuinedEngine.utils.Consts;
 
 public class TestGame implements ILogic{
 	
-	private List<Entity> entities;
+	
 	private final RenderManager renderer;
 	private final ObjectLoader loader;
 	private final WindowManager window;
@@ -49,6 +51,7 @@ public class TestGame implements ILogic{
 	private SoundManager soundManager;
 	private Entity selectedEntity;
 	private static Fog fog;
+	private Logger gamelogger;
 	
 	public TestGame() {
 		renderer = new RenderManager();
@@ -58,11 +61,12 @@ public class TestGame implements ILogic{
 		cameraInc = new Vector3f(0,0,0);
 		sceneManager = new SceneManager(-90);
 		fog = new Fog(true, new Vector3f(1.94f, 1.78f, 1.28f),0.5f);
+		gamelogger = Logger.getLogger(TestGame.class.getName());
 	}
 	
 	@Override
 	public void init() throws Exception {
-		
+  List<Entity> entities;
 		renderer.init();
 		
 		initSounds(camera.getPosition(), camera);
@@ -105,7 +109,7 @@ public class TestGame implements ILogic{
 		lightPosition = new Vector3f(-1,-10,0);
 		lightColour = new Vector3f(1,1,1);
 		sceneManager.setDirectionalLight(new DirectionalLight(lightColour,lightPosition,lightIntensity));
-		
+		sceneManager.setLightAngle(90f);
 		sceneManager.setPointLights(new PointLight[]{pointLight});
 		sceneManager.getPointLights()[0].setColour(new Vector3f(255,255,255));
 		soundSource.play();
@@ -156,6 +160,7 @@ public class TestGame implements ILogic{
 
 	@Override
 	public void update(MouseInput mouseInput) {
+		gamelogger.log(Level.INFO, Float.toString(camera.getPosition().x) + " " + Float.toString(camera.getPosition().y) + " " + Float.toString(camera.getPosition().z));
 		soundManager.updateListenerPosition(camera);
 		camera.movePosition(cameraInc.x * Consts.CAMERA_SPEED,cameraInc.y * Consts.CAMERA_SPEED,cameraInc.z * Consts.CAMERA_SPEED);
 		camera.getRotation().x = Math.max(-85.0f, Math.min(camera.getRotation().x, 85.0f));
@@ -169,6 +174,7 @@ public class TestGame implements ILogic{
 		for(Terrain terrain : sceneManager.getTerrains()) {
 			renderer.processTerrain(terrain);
 		}
+		
 		sceneManager.getPointLights()[0].getPosition().x = camera.getPosition().x;
 		sceneManager.getPointLights()[0].getPosition().y = camera.getPosition().y;
 		sceneManager.getPointLights()[0].getPosition().z = camera.getPosition().z;

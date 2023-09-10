@@ -52,7 +52,6 @@ public class RenderManager {
 		
 		entityRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
 		terrainRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
-		
 	}
 	public void processEntity(Entity entity) {
 		List<Entity> entityList = entityRenderer.getEntities().get(entity.getModel());

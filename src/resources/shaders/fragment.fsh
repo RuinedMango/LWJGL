@@ -136,7 +136,7 @@ void main(){
 			diffuseSpecularComp = calcSpotLight(spotLights[i], fragPos, fragNormal);
 		}
 	}
-	if(fog.activeFog == 1){
+	if(fog.active == 1){
 		fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 	}else{
 		fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
