@@ -71,13 +71,13 @@ public class TestGame implements ILogic{
 		
 		initSounds(camera.getPosition(), camera);
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
-		model.setTexture(new Texture(loader.loadTexture("textures/punto_body.png")), 1f);
+		model.setTexture(new Texture(loader.loadTexture("resources/textures/punto_body.png")), 1f);
 		
-		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("textures/terrain.png"));
-		TerrainTexture redTexture = new TerrainTexture(loader.loadTexture("textures/flowers.png"));
-		TerrainTexture greenTexture = new TerrainTexture(loader.loadTexture("textures/stone.png"));
-		TerrainTexture blueTexture = new TerrainTexture(loader.loadTexture("textures/dirt.png"));
-		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("textures/blendMap.png"));
+		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("resources/textures/terrain.png"));
+		TerrainTexture redTexture = new TerrainTexture(loader.loadTexture("resources/textures/flowers.png"));
+		TerrainTexture greenTexture = new TerrainTexture(loader.loadTexture("resources/textures/stone.png"));
+		TerrainTexture blueTexture = new TerrainTexture(loader.loadTexture("resources/textures/dirt.png"));
+		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("resources/textures/blendMap.png"));
 		entities = new ArrayList<>();
 		Random rnd = new Random();
 		for(int i = 0; i < 200; i++) {
@@ -99,7 +99,7 @@ public class TestGame implements ILogic{
 		//point light
 		float lightIntensity = 0.1f;
 		Vector3f lightPosition = new Vector3f(0,0,0);
-		Vector3f lightColour = new Vector3f(1,1,1);
+		Vector3f lightColour = new Vector3f(0,0,0);
 		PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity, 0,0,1);
 		
 		//spot light
@@ -120,7 +120,7 @@ public class TestGame implements ILogic{
 		soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
 		soundManager.setListener(new SoundListener(camera.getPosition()));
 		
-		SoundBuffer buffer = new SoundBuffer("sound/cool.ogg");
+		SoundBuffer buffer = new SoundBuffer("resources/sound/cool.ogg");
 		soundManager.addSoundBuffer(buffer);
 		soundSource = new SoundSource(false, false);
 		soundSource.setPosition(position);

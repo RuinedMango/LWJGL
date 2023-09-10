@@ -10,5 +10,12 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL Windows Natives"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Netty"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL Linux arm32 Natives"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL Linux arm64 Natives"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL Linux Natives"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL MacOS arm64 Natives"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL MacOS Natives"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL Windows arm64 Natives"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL Windows x86 Natives"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
