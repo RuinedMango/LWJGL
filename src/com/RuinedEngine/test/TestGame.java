@@ -97,7 +97,7 @@ public class TestGame implements ILogic{
 		
 		
 		//point light
-		float lightIntensity = 0.5f;
+		float lightIntensity = 0.1f;
 		Vector3f lightPosition = new Vector3f(0,0,0);
 		Vector3f lightColour = new Vector3f(1,1,1);
 		PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity, 0,0,1);

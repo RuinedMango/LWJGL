@@ -75,6 +75,13 @@ public class EntityRenderer implements IRenderer<Object>{
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
 		GL20.glEnableVertexAttribArray(2);
+		
+		if(model.getMaterial().isDisableCulling()) {
+			RenderManager.disableCulling();
+		}else {
+			RenderManager.enableCulling();
+		}
+		
 		shader.setUniform("material", model.getMaterial());
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
