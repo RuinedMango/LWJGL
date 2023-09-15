@@ -13,6 +13,8 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.GL11;
 
+import com.RuinedEngine.VFX.FlowParticleEmitter;
+import com.RuinedEngine.VFX.Particle;
 import com.RuinedEngine.audio.SoundBuffer;
 import com.RuinedEngine.audio.SoundListener;
 import com.RuinedEngine.audio.SoundManager;
@@ -35,6 +37,7 @@ import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.rendering.Fog;
 import com.RuinedEngine.rendering.RenderManager;
 import com.RuinedEngine.utils.Consts;
+import com.RuinedEngine.utils.Utils;
 
 
 
@@ -84,11 +87,32 @@ public class TestGame implements ILogic{
 			float x1 = rnd.nextFloat() * 100;
 			float y1 = 5;
 			float z = rnd.nextFloat() * -300;
-			entities.add(new Entity(model,new Vector3f(x1,y1,z),new Vector3f(rnd.nextFloat() * 180, rnd.nextFloat() * 180,0),1));
-			sceneManager.addEntity(new Entity(model,new Vector3f(x1,y1,z),new Vector3f(rnd.nextFloat() * 180, rnd.nextFloat() * 180,0),1));
+			entities.add(new Entity(model));
+			sceneManager.addEntity(new Entity(model));
+			sceneManager.getEntities().get(i).setPos(x1, y1, z);
 		}
-		entities.add(new Entity(model, new Vector3f(0,0,-2f), new Vector3f(0,0,0), 1));
-		sceneManager.addEntity(new Entity(model, new Vector3f(0,0,-2f), new Vector3f(0,0,0), 1));
+		entities.add(new Entity(model));
+		sceneManager.addEntity(new Entity(model));
+		
+		Vector3f particleSpeed = new Vector3f(10, 10, 10);
+		particleSpeed.mul(2.5f);
+		long ttl = 4000;
+		int maxParticles = 200;
+		long creationPeriodMillis = 300;
+		float range = 0.2f;
+		float scale = 0.5f;
+		Model partMesh = loader.loadOBJModel("/models/particle.obj");
+		Texture texture = new Texture(loader.loadTexture("resources/textures/particle_tmp.png"));
+		float reflectance = 1f;
+		Material partMaterial = new Material(texture, reflectance );
+		partMesh.setMaterial(partMaterial);
+		Particle particle = new Particle(partMesh, particleSpeed, ttl);
+		particle.setScale(scale);
+		FlowParticleEmitter particleEmitter = new FlowParticleEmitter(particle, maxParticles, creationPeriodMillis);
+		particleEmitter.setActive(true);
+		particleEmitter.setPositionRndRange(range);
+		particleEmitter.setSpeedRndRange(range);
+		this.sceneManager.setParticleEmitters(new FlowParticleEmitter[] {particleEmitter});
 		
 		BlendMapTerrain blendMapTerrain = new BlendMapTerrain(backgroundTexture, redTexture, greenTexture, blueTexture);
 		

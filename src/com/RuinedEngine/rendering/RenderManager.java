@@ -85,6 +85,7 @@ public class RenderManager {
 	public void clear() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	}
+	/**Cleans all generated renders**/
 	public void cleanup() {
 		entityRenderer.cleanup();
 		terrainRenderer.cleanup();

@@ -8,11 +8,11 @@ public class Entity {
 	private Vector3f rotation;
 	private float scale;
 	private boolean selected;
-	public Entity(Model model, Vector3f pos, Vector3f rotation, float scale) {
+	public Entity(Model model) {
 		this.model = model;
-		this.pos = pos;
-		this.rotation = rotation;
-		this.scale = scale;
+		this.pos = new Vector3f(0,0,0);
+		this.rotation = new Vector3f(0,0,0);
+		this.scale = 1;
 	}
 	
 	public void incPos(float x, float y, float z) {
@@ -60,6 +60,10 @@ public class Entity {
 
 	public float getScale() {
 		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
 	}
 	
 }

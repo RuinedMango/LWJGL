@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.joml.Vector3f;
 
+import com.RuinedEngine.VFX.IParticleEmitter;
 import com.RuinedEngine.entity.terrain.Terrain;
 import com.RuinedEngine.lighting.DirectionalLight;
 import com.RuinedEngine.lighting.PointLight;
@@ -19,6 +20,7 @@ public class SceneManager {
 	private Vector3f ambientLight;
 	private SpotLight[] spotLights;
 	private PointLight[] pointLights;
+	private static IParticleEmitter[] particleEmitters;
 	private DirectionalLight directionalLight;
 	private float lightAngle;
 	private float spotAngle = 0;
@@ -113,6 +115,14 @@ public class SceneManager {
 
 	public void setSpotInc(float spotInc) {
 		this.spotInc = spotInc;
+	}
+
+	public static IParticleEmitter[] getParticleEmitters() {
+		return particleEmitters;
+	}
+
+	public void setParticleEmitters(IParticleEmitter[] particleEmitters) {
+		this.particleEmitters = particleEmitters;
 	}
 	
 }
