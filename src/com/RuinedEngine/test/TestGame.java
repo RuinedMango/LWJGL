@@ -2,24 +2,14 @@ package com.RuinedEngine.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.joml.PolygonsIntersection;
-import org.joml.RayAabIntersection;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-
-import com.RuinedEngine.VFX.FlowParticleEmitter;
-import com.RuinedEngine.VFX.Particle;
-import com.RuinedEngine.audio.SoundBuffer;
 import com.RuinedEngine.audio.SoundListener;
 import com.RuinedEngine.audio.SoundManager;
 import com.RuinedEngine.audio.SoundSource;
@@ -29,19 +19,15 @@ import com.RuinedEngine.core.MouseInput;
 import com.RuinedEngine.core.ObjectLoader;
 import com.RuinedEngine.core.WindowManager;
 import com.RuinedEngine.entity.Entity;
-import com.RuinedEngine.entity.Material;
 import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.SceneManager;
 import com.RuinedEngine.entity.Texture;
-import com.RuinedEngine.entity.terrain.BlendMapTerrain;
 import com.RuinedEngine.entity.terrain.Terrain;
-import com.RuinedEngine.entity.terrain.TerrainTexture;
 import com.RuinedEngine.lighting.DirectionalLight;
 import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.rendering.Fog;
 import com.RuinedEngine.rendering.RenderManager;
 import com.RuinedEngine.utils.Consts;
-import com.RuinedEngine.utils.Utils;
 
 
 
@@ -56,7 +42,6 @@ public class TestGame implements ILogic{
 	Vector3f cameraInc;
 	private SoundSource soundSource;
 	private SoundManager soundManager;
-	private Entity selectedEntity;
 	private static Fog fog;
 	private Logger gamelogger;
 	
@@ -67,41 +52,29 @@ public class TestGame implements ILogic{
 		camera = new Camera();
 		cameraInc = new Vector3f(0,0,0);
 		sceneManager = new SceneManager(-90);
-		fog = new Fog(true, new Vector3f(1.94f, 1.78f, 1.28f),0.5f);
 		gamelogger = Logger.getLogger(TestGame.class.getName());
 	}
 	
 	@Override
 	public void init() throws Exception {
-  List<Entity> entities;
+		fog = new Fog(true, new Vector3f(1.94f, 1.78f, 1.28f),0.5f);
+		List<Entity> entities = new ArrayList<>();
 		renderer.init();
 		
 		initSounds(camera.getPosition(), camera);
 		Model model = loader.loadOBJModel("/models/Fiat.obj");
 		model.setTexture(new Texture(loader.loadTexture("resources/textures/punto_body.png")), 1f);
-		
-		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("resources/textures/terrain.png"));
-		TerrainTexture redTexture = new TerrainTexture(loader.loadTexture("resources/textures/flowers.png"));
-		TerrainTexture greenTexture = new TerrainTexture(loader.loadTexture("resources/textures/stone.png"));
-		TerrainTexture blueTexture = new TerrainTexture(loader.loadTexture("resources/textures/dirt.png"));
-		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("resources/textures/blendMap.png"));
-		entities = new ArrayList<>();
-		Random rnd = new Random();
-		for(int i = 0; i < 200; i++) {
-			float x1 = rnd.nextFloat() * 100;
-			float y1 = 5;
-			float z = rnd.nextFloat() * -300;
-			entities.add(new Entity(model));
-			sceneManager.addEntity(new Entity(model));
-			sceneManager.getEntities().get(i).setPos(x1, y1, z);
-		}
 		entities.add(new Entity(model));
 		sceneManager.addEntity(new Entity(model));
 		
-		BlendMapTerrain blendMapTerrain = new BlendMapTerrain(backgroundTexture, redTexture, greenTexture, blueTexture);
-		
-		Terrain terrain = new Terrain(new Vector3f(0,-1,-800), loader, new Material(new Vector4f(0f,0f,0f,0f), 0.1f), blendMapTerrain, blendMap);
-		sceneManager.addTerrain(terrain);
+		//TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("resources/textures/terrain.png"));
+		//TerrainTexture redTexture = new TerrainTexture(loader.loadTexture("resources/textures/flowers.png"));
+		//TerrainTexture greenTexture = new TerrainTexture(loader.loadTexture("resources/textures/stone.png"));
+		//TerrainTexture blueTexture = new TerrainTexture(loader.loadTexture("resources/textures/dirt.png"));
+		//TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("resources/textures/blendMap.png"));
+		//BlendMapTerrain blendMapTerrain = new BlendMapTerrain(backgroundTexture, redTexture, greenTexture, blueTexture);
+		//Terrain terrain = new Terrain(new Vector3f(0,-1,-800), loader, new Material(new Vector4f(0f,0f,0f,0f), 0.1f), blendMapTerrain, blendMap);
+		//sceneManager.addTerrain(terrain);
 		
 		
 		//point light
@@ -128,11 +101,11 @@ public class TestGame implements ILogic{
 		soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
 		soundManager.setListener(new SoundListener(camera.getPosition()));
 		
-		SoundBuffer buffer = new SoundBuffer("resources/sound/cool.ogg");
-		soundManager.addSoundBuffer(buffer);
+		//SoundBuffer buffer = new SoundBuffer("resources/sound/cool.ogg");
+		//soundManager.addSoundBuffer(buffer);
 		soundSource = new SoundSource(false, false);
 		soundSource.setPosition(position);
-		soundSource.setBuffer(buffer.getBufferId());
+		//soundSource.setBuffer(buffer.getBufferId());
 		soundManager.addSoundSource("CREAK", soundSource);
 	}
 
@@ -204,12 +177,6 @@ public class TestGame implements ILogic{
 		soundManager.cleanup();
 		renderer.cleanup();
 		loader.cleanup();
-	}
-	public Entity getSelectedEntity() {
-		return selectedEntity;
-	}
-	public void setSelectedEntity(Entity selectedEntity) {
-		this.selectedEntity = selectedEntity;
 	}
 	public static Fog getFog() {
 		return fog;

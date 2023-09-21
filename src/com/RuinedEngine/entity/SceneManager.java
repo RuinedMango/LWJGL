@@ -20,7 +20,7 @@ public class SceneManager {
 	private Vector3f ambientLight;
 	private SpotLight[] spotLights;
 	private PointLight[] pointLights;
-	private static IParticleEmitter[] particleEmitters;
+	private IParticleEmitter[] particleEmitters;
 	private DirectionalLight directionalLight;
 	private float lightAngle;
 	private float spotAngle = 0;
@@ -117,7 +117,7 @@ public class SceneManager {
 		this.spotInc = spotInc;
 	}
 
-	public static IParticleEmitter[] getParticleEmitters() {
+	public IParticleEmitter[] getParticleEmitters() {
 		return particleEmitters;
 	}
 
