@@ -1,100 +1,37 @@
 package com.RuinedEngine.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joml.Vector4f;
 
 import com.RuinedEngine.utils.Consts;
 
 public class Material {
-	private Vector4f ambientColour;
-	private Vector4f diffuseColour;
-	private Vector4f specularColour;
-	private float reflectance;
-	private Texture texture;
-	private boolean disableCulling;
+	private List<Mesh> meshList;
+	private String texturePath;
+	private Vector4f diffuseColor;
 	
 	public Material() {
-		this.ambientColour = Consts.DEFAULT_COLOUR;
-		this.diffuseColour = Consts.DEFAULT_COLOUR;
-		this.specularColour = Consts.DEFAULT_COLOUR;
-		this.disableCulling = false;
-		this.texture = null;
-		this.reflectance = 0;
+		diffuseColor = Consts.DEFAULT_COLOR;
+		meshList = new ArrayList<>();
 	}
-	
-	public Material(Vector4f colour, float reflectance) {
-		this(colour,colour,colour,reflectance,null);
+	public void cleanup() {
+		meshList.forEach(Mesh::cleanup);
 	}
-	
-	public Material(Vector4f colour, float reflectance, Texture texture) {
-		this(colour,colour,colour,reflectance,texture);
+	public List<Mesh> getMeshList(){
+		return meshList;
 	}
-	
-	public Material(Texture texture) {
-		this(Consts.DEFAULT_COLOUR,Consts.DEFAULT_COLOUR,Consts.DEFAULT_COLOUR,0,texture);
+	public Vector4f getDiffuseColor() {
+		return diffuseColor;
 	}
-	public Material(Texture texture, float reflectance) {
-		this(Consts.DEFAULT_COLOUR,Consts.DEFAULT_COLOUR,Consts.DEFAULT_COLOUR,reflectance,texture);
+	public void setDiffuseColor(Vector4f diffuseColor) {
+		this.diffuseColor = diffuseColor;
 	}
-	
-	public Material(Vector4f ambientColour, Vector4f diffuseColour, Vector4f specularColour, float reflectance,Texture texture) {
-		this.ambientColour = ambientColour;
-		this.diffuseColour = diffuseColour;
-		this.specularColour = specularColour;
-		this.reflectance = reflectance;
-		this.texture = texture;
+	public String getTexturePath() {
+		return texturePath;
 	}
-
-	public Vector4f getAmbientColour() {
-		return ambientColour;
+	public void setTexturePath(String texturePath) {
+		this.texturePath = texturePath;
 	}
-
-	public void setAmbientColour(Vector4f ambientColour) {
-		this.ambientColour = ambientColour;
-	}
-
-	public Vector4f getDiffuseColour() {
-		return diffuseColour;
-	}
-
-	public void setDiffuseColour(Vector4f diffuseColour) {
-		this.diffuseColour = diffuseColour;
-	}
-
-	public Vector4f getSpecularColour() {
-		return specularColour;
-	}
-
-	public void setSpecularColour(Vector4f specularColour) {
-		this.specularColour = specularColour;
-	}
-
-	public float getReflectance() {
-		return reflectance;
-	}
-
-	public void setReflectance(float reflectance) {
-		this.reflectance = reflectance;
-	}
-
-	public Texture getTexture() {
-		return texture;
-	}
-
-	public void setTexture(Texture texture) {
-		this.texture = texture;
-	}
-	
-	public boolean hasTexture() {
-		return texture != null;
-	}
-
-	public boolean isDisableCulling() {
-		return disableCulling;
-	}
-
-	public void setDisableCulling(boolean disableCulling) {
-		this.disableCulling = disableCulling;
-	}
-	
-	
 }

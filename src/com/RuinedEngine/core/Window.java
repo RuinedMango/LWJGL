@@ -1,28 +1,29 @@
 package com.RuinedEngine.core;
 
 import java.util.concurrent.Callable;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
 
-import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
 	private final long windowHandle;
-	
 	private int height;
 	private Callable<Void> resizeFunc;
 	private int width;
+	private MouseInput mouseInput;
 	
 	public Window(String title, WindowOptions opts, Callable<Void> resizeFunc) {
 		this.resizeFunc = resizeFunc;
 		if(!GLFW.glfwInit()) {
-			throw new IllegalStateException("Unable to initialize GLFW");
+			throw new IllegalStateException("Unable to initialize GLFW!");
 		}
 		GLFW.glfwDefaultWindowHints();
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
 		
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -44,30 +45,21 @@ public class Window {
 		}
 		windowHandle = GLFW.glfwCreateWindow(width, height, title, NULL, NULL);
 		if(windowHandle == NULL) {
-			throw new RuntimeException("Failed to create the GLFW window");
+			throw new RuntimeException("Failed to create the GLFW window!");
 		}
 		GLFW.glfwSetFramebufferSizeCallback(windowHandle, (window, w, h) -> resized(w, h));
-		
-		GLFW.glfwSetKeyCallback(windowHandle, (window, key ,scancode, action, mods)->{
-			keyCallBack(key, action);
-		});
-		
+		GLFW.glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> 
+			keyCallBack(key, action)
+		);
 		GLFW.glfwMakeContextCurrent(windowHandle);
-		if(opts.fps > 0) {
-			GLFW.glfwSwapInterval(0);
-		}else {
-			GLFW.glfwSwapInterval(1);
-		}
-		GLFW.glfwShowWindow(windowHandle);
-		
 		int[] arrWidth = new int[1];
 		int[] arrHeight = new int[1];
 		GLFW.glfwGetFramebufferSize(windowHandle, arrWidth, arrHeight);
 		width = arrWidth[0];
 		height = arrHeight[0];
+		mouseInput = new MouseInput(windowHandle);
 	}
-	
-	public void keyCallBack(int key, int action) {
+	public void keyCallBack(int key, int action){
 		if(key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
 			GLFW.glfwSetWindowShouldClose(windowHandle, true);
 		}
@@ -86,15 +78,16 @@ public class Window {
 	public long getWindowHandle() {
 		return windowHandle;
 	}
-
+	public MouseInput getMouseInput() {
+		return mouseInput;
+	}
 	public int getHeight() {
 		return height;
 	}
-
 	public int getWidth() {
 		return width;
 	}
-
+	
 	public boolean isKeyPressed(int keyCode) {
 		return GLFW.glfwGetKey(windowHandle, keyCode) == GLFW.GLFW_PRESS;
 	}
@@ -102,6 +95,7 @@ public class Window {
 	public void pollEvents() {
 		GLFW.glfwPollEvents();
 	}
+	
 	protected void resized(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -111,13 +105,15 @@ public class Window {
 			
 		}
 	}
+
 	public void update() {
 		GLFW.glfwSwapBuffers(windowHandle);
 	}
+	
 	public boolean windowShouldClose() {
 		return GLFW.glfwWindowShouldClose(windowHandle);
 	}
-
+	
 	public static class WindowOptions{
 		public boolean compatibleProfile;
 		public int fps;

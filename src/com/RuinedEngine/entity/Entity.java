@@ -1,60 +1,43 @@
 package com.RuinedEngine.entity;
 
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class Entity {
-	private Model model;
-	private Vector3f pos;
-	private Vector3f rotation;
+	private final String id;
+	private final String modelId;
+	private Matrix4f modelMatrix;
+	private Vector3f position;
+	private Quaternionf rotation;
 	private float scale;
-	private boolean selected;
-	public Entity(Model model) {
-		this.model = model;
-		this.pos = new Vector3f(0,0,0);
-		this.rotation = new Vector3f(0,0,0);
-		this.scale = 1;
-	}
 	
-	public void incPos(float x, float y, float z) {
-		this.pos.x += x;
-		this.pos.y += y;
-		this.pos.z += z;
-	}
-	public void setPos(float x, float y, float z) {
-		this.pos.x = x;
-		this.pos.y = y;
-		this.pos.z = z;
-	}
-	public void incRotation(float x, float y, float z) {
-		this.rotation.x += x;
-		this.rotation.y += y;
-		this.rotation.z += z;
-	}
-	public void setRotation(float x, float y, float z) {
-		this.rotation.x = x;
-		this.rotation.y = y;
-		this.rotation.z = z;
-	}
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
-	public boolean getSelected() {
-		return selected;
-	}
-	
-	public void setModel(Model model) {
-		this.model = model;
+	public Entity(String id, String modelId) {
+		this.id = id;
+		this.modelId = modelId;
+		modelMatrix = new Matrix4f();
+		position = new Vector3f();
+		rotation = new Quaternionf();
+		scale = 1;
 	}
 
-	public Model getModel() {
-		return model;
+	public String getId() {
+		return id;
 	}
 
-	public Vector3f getPos() {
-		return pos;
+	public String getModelId() {
+		return modelId;
 	}
 
-	public Vector3f getRotation() {
+	public Matrix4f getModelMatrix() {
+		return modelMatrix;
+	}
+
+	public Vector3f getPosition() {
+		return position;
+	}
+
+	public Quaternionf getRotation() {
 		return rotation;
 	}
 
@@ -62,8 +45,20 @@ public class Entity {
 		return scale;
 	}
 
+	public final void setPosition(float x, float y, float z) {
+		position.x = x;
+		position.y = y;
+		position.z = z;
+	}
+
+	public void setRotation(float x, float y, float z, float angle) {
+		this.rotation.fromAxisAngleRad(x, y, z, angle);
+	}
+
 	public void setScale(float scale) {
 		this.scale = scale;
 	}
-	
+	public void updateModelMatrix() {
+		modelMatrix.translationRotateScale(position, rotation, scale);
+	}
 }

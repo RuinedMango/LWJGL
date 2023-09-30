@@ -1,73 +1,62 @@
 package com.RuinedEngine.core;
 
-import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
-import com.RuinedEngine.test.Launcher;
-
 public class MouseInput {
+	private Vector2f currentPos;
+	private Vector2f displVec;
+	private boolean inWindow;
+	private boolean leftButtonPressed;
+	private Vector2f previousPos;
+	private boolean rightButtonPressed;
 	
-	private final Vector2d previousPos;
-	private static Vector2d currentPos;
-	private final Vector2f displVec;
-	
-	private boolean inWindow = false;
-	private boolean leftButtonPress = false;
-	private boolean rightButtonPress = false;
-	
-	public MouseInput() {
-		previousPos = new Vector2d(-1,-1);
-		currentPos = new Vector2d(0,0);
+	public MouseInput(long windowHandle) {
+		previousPos = new Vector2f(-1,-1);
+		currentPos = new Vector2f();
 		displVec = new Vector2f();
+		leftButtonPressed = false;
+		rightButtonPressed = false;
+		inWindow = false;
+		
+		GLFW.glfwSetCursorPosCallback(windowHandle, (handle, xpos, ypos) -> {
+			currentPos.x = (float) xpos;
+			currentPos.y = (float) ypos;
+		});
+		GLFW.glfwSetCursorEnterCallback(windowHandle, (handle, entered) -> inWindow = entered);
+		GLFW.glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mode) -> {
+			leftButtonPressed = button == GLFW.GLFW_MOUSE_BUTTON_1 && action == GLFW.GLFW_PRESS;
+			rightButtonPressed = button == GLFW.GLFW_MOUSE_BUTTON_2 && action == GLFW.GLFW_PRESS;
+		});
 	}
-	
-	public void init() {
-		GLFW.glfwSetCursorPosCallback(Launcher.getWindow().getWindowHandle(), (window,xpos,ypos) -> {
-			currentPos.x = xpos;
-			currentPos.y = ypos;
-		});
-		GLFW.glfwSetCursorEnterCallback(Launcher.getWindow().getWindowHandle(), (window,entered) -> {
-			inWindow = entered;
-		});
-		GLFW.glfwSetMouseButtonCallback(Launcher.getWindow().getWindowHandle(), (window,button,action,mods) -> {
-			leftButtonPress = button == GLFW.GLFW_MOUSE_BUTTON_1 && action == GLFW.GLFW_PRESS;
-			rightButtonPress = button == GLFW.GLFW_MOUSE_BUTTON_2 && action == GLFW.GLFW_PRESS;
-		});
+	public Vector2f getCurrentPos() {
+		return currentPos;
+	}
+	public Vector2f getDisplVec() {
+		return displVec;
 	}
 	public void input() {
 		displVec.x = 0;
 		displVec.y = 0;
 		if(previousPos.x > 0 && previousPos.y > 0 && inWindow) {
-			double x = currentPos.x - previousPos.x;
-			double y = currentPos.y - previousPos.y;
-			boolean rotateX = x != 0;
-			boolean rotateY = y != 0;
+			double deltax = currentPos.x - previousPos.x;
+			double deltay = currentPos.y - previousPos.y;
+			boolean rotateX = deltax != 0;
+			boolean rotateY = deltay != 0;
 			if(rotateX) {
-				displVec.y = (float) x;
+				displVec.y = (float) deltax;
 			}
 			if(rotateY) {
-				displVec.x = (float) y;
+				displVec.x = (float) deltay;
 			}
 		}
 		previousPos.x = currentPos.x;
 		previousPos.y = currentPos.y;
 	}
-
-	public Vector2f getDisplVec() {
-		return displVec;
+	public boolean isLeftButtonPressed() {
+		return leftButtonPressed;
 	}
-
-	public boolean isLeftButtonPress() {
-		return leftButtonPress;
+	public boolean isRightButtonPressed() {
+		return rightButtonPressed;
 	}
-
-	public boolean isRightButtonPress() {
-		return rightButtonPress;
-	}
-
-	public static Vector2d getCurrentPos() {
-		return currentPos;
-	}
-	
 }

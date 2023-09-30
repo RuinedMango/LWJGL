@@ -1,10 +1,10 @@
 package com.RuinedEngine.core;
 
-import com.RuinedEngine.rendering.Render;
+import com.RuinedEngine.GUI.IGuiInstance;
 
 public class Engine {
 	public static final int TARGET_UPS = 30;
-	private final IAppLogic appLogic;
+	public final IAppLogic appLogic;
 	private final Window window;
 	private Render render;
 	private boolean running;
@@ -13,15 +13,15 @@ public class Engine {
 	private int targetUps;
 	
 	public Engine(String windowTitle, Window.WindowOptions opts, IAppLogic appLogic) {
-		window = new Window(windowTitle, opts, ()->{
+		window = new Window(windowTitle, opts, () -> {
 			resize();
 			return null;
 		});
 		targetFps = opts.fps;
 		targetUps = opts.ups;
 		this.appLogic = appLogic;
-		render = new Render();
-		scene = new Scene();
+		render = new Render(window);
+		scene = new Scene(window.getWidth(), window.getHeight());
 		appLogic.init(window, scene, render);
 		running = true;
 	}
@@ -32,27 +32,34 @@ public class Engine {
 		window.cleanup();
 	}
 	private void resize() {
-		
+		int width = window.getWidth();
+		int height = window.getHeight();
+		scene.resize(width, height);
+		render.resize(width, height);
 	}
+	
 	private void run() {
 		long initialTime = System.currentTimeMillis();
 		float timeU = 1000.0f / targetUps;
 		float timeR = targetFps > 0 ? 1000.0f / targetFps : 0;
 		float deltaUpdate = 0;
 		float deltaFps = 0;
-		
 		long updateTime = initialTime;
+		IGuiInstance iGuiInstance = scene.getGuiInstance();
 		while(running && !window.windowShouldClose()) {
 			window.pollEvents();
 			
 			long now = System.currentTimeMillis();
 			deltaUpdate += (now - initialTime) / timeU;
 			deltaFps += (now - initialTime) / timeR;
+			
 			if(targetFps <= 0 || deltaFps >= 1) {
-				appLogic.input(window, scene, now - initialTime);
+				window.getMouseInput().input();
+				boolean inputConsumed = iGuiInstance != null && iGuiInstance.handleGuiInput(scene, window);
+				appLogic.input(window, scene, now - initialTime, inputConsumed);
 			}
 			if(deltaUpdate >= 1) {
-				long diffTimeMillis = now  - updateTime;
+				long diffTimeMillis = now - updateTime;
 				appLogic.update(window, scene, diffTimeMillis);
 				updateTime = now;
 				deltaUpdate--;

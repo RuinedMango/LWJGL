@@ -1,57 +1,28 @@
 package com.RuinedEngine.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Model {
-	private int id;
-	private int vertexCount;
-	private Material material;
+	private final String id;
+	private List<Entity> entitiesList;
+	private List<Material> materialList;
 	
-	public Model(int id, int vertexCount) {
+	public Model(String id, List<Material> materialList) {
 		this.id = id;
-		this.vertexCount = vertexCount;
-		this.material = new Material();
+		this.materialList = materialList;
+		entitiesList = new ArrayList<>();
 	}
-
-	public Model(int id, int vertexCount, Texture texture) {
-		this.id = id;
-		this.vertexCount = vertexCount;
-		this.material =new Material(texture);
+	public void cleanup() {
+		materialList.forEach(Material::cleanup);
 	}
-
-	public Model(Model model,Texture texture) {
-		this.id = model.getId();
-		this.vertexCount = model.getVertexCount();
-		this.material = model.getMaterial();
-		this.material.setTexture(texture);
+	public List<Entity> getEntitiesList(){
+		return entitiesList;
 	}
-
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-
-	public int getVertexCount() {
-		return vertexCount;
+	public List<Material> getMaterialList(){
+		return materialList;
 	}
-
-	public Material getMaterial() {
-		return material;
-	}
-
-	public void setMaterial(Material material) {
-		this.material = material;
-	}
-
-	public Texture getTexture() {
-		return material.getTexture();
-	}
-
-	public void setTexture(Texture texture) {
-		material.setTexture(texture);
-	}
-	
-	public void setTexture(Texture texture, float reflectance) {
-		this.material.setTexture(texture);
-		this.material.setReflectance(reflectance);
-	}
-	
-	
 }
