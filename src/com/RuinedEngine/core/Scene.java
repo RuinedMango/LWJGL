@@ -6,6 +6,7 @@ import java.util.Map;
 import com.RuinedEngine.GUI.IGuiInstance;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Model;
+import com.RuinedEngine.lighting.SceneLights;
 import com.RuinedEngine.utils.Projection;
 import com.RuinedEngine.utils.TextureCache;
 
@@ -15,6 +16,7 @@ public class Scene {
 	private TextureCache textureCache;
 	private Camera camera;
 	private IGuiInstance guiInstance;
+	private SceneLights sceneLights;
 	public Scene( int width, int height) {
 		modelMap = new HashMap<>();
 		projection = new Projection(width, height);
@@ -42,6 +44,9 @@ public class Scene {
 	public Camera getCamera() {
 		return camera;
 	}
+	public SceneLights getSceneLights() {
+		return sceneLights;
+	}
 	public Projection getProjection() {
 		return projection;
 	}
@@ -53,6 +58,9 @@ public class Scene {
 	}
 	public void setGuiInstance(IGuiInstance guiInstance) {
 		this.guiInstance = guiInstance;
+	}
+	public void setSceneLights(SceneLights sceneLights) {
+		this.sceneLights = sceneLights;
 	}
 	public void resize(int width, int height) {
 		projection.updateProjMatrix(width, height);

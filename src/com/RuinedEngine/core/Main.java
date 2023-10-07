@@ -1,12 +1,17 @@
 package com.RuinedEngine.core;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import com.RuinedEngine.GUI.IGuiInstance;
+import com.RuinedEngine.GUI.LightControls;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.ModelLoader;
+import com.RuinedEngine.lighting.PointLight;
+import com.RuinedEngine.lighting.SceneLights;
+import com.RuinedEngine.lighting.SpotLight;
 import com.RuinedEngine.utils.Consts;
 
 import imgui.ImGui;
@@ -32,9 +37,18 @@ public class Main implements IAppLogic, IGuiInstance{
 		
 		Entity cubeEntity = new Entity("cube-entity", cubeModel.getId());
 		cubeEntity.setPosition(0, 0, -2);
+		cubeEntity.updateModelMatrix();
 		scene.addEntity(cubeEntity);
 		
-		scene.setGuiInstance(this);
+		SceneLights sceneLights = new SceneLights();
+		sceneLights.getAmbientLight().setIntensity(0.3f);
+		scene.setSceneLights(sceneLights);
+		sceneLights.getPointLights().add(new PointLight(new Vector3f(1,1,1), new Vector3f(0,0,-1.4f), 1.0f));
+		Vector3f coneDir = new Vector3f(0,0,-1);
+		sceneLights.getSpotLights().add(new SpotLight(new PointLight(new Vector3f(1, 1, 1),new Vector3f(0, 0, -1.4f), 0.0f), coneDir, 140.0f));
+		
+		LightControls lightControls = new LightControls(scene);
+		scene.setGuiInstance(lightControls);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
@@ -33,6 +34,12 @@ public class UniformsMap {
 	}
 	public void setUniform(String uniformName, int value) {
 		GL20.glUniform1i(getUniformLocation(uniformName), value);
+	}
+	public void setUniform(String uniformName, float value) {
+		GL20.glUniform1f(getUniformLocation(uniformName), value);
+	}
+	public void setUniform(String uniformName, Vector3f value) {
+		GL20.glUniform3f(getUniformLocation(uniformName), value.x, value.y, value.z);
 	}
 	public void setUniform(String uniformName, Matrix4f value) {
 		try(MemoryStack stack = MemoryStack.stackPush()){

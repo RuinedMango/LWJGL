@@ -18,7 +18,7 @@ public class Mesh {
 	private int vaoId;
 	private List<Integer> vboIdList;
 	
-	public Mesh(float[] positions,float[] textCoords, int[] indices) {
+	public Mesh(float[] positions, float[] normals,float[] textCoords, int[] indices) {
 		try(MemoryStack stack = MemoryStack.stackPush()){
 			this.numVertices = indices.length;
 			vboIdList = new ArrayList<>();
@@ -37,12 +37,21 @@ public class Mesh {
 			
 			vboId = glGenBuffers();
 			vboIdList.add(vboId);
+			FloatBuffer normalsBuffer = stack.callocFloat(normals.length);
+			normalsBuffer.put(0, normals);
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalsBuffer, GL15.GL_STATIC_DRAW);
+			GL20.glEnableVertexAttribArray(1);
+			GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
+			
+			vboId = glGenBuffers();
+			vboIdList.add(vboId);
 			FloatBuffer textCoordsBuffer = stack.callocFloat(textCoords.length);
 			textCoordsBuffer.put(0, textCoords);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
 			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, textCoordsBuffer, GL15.GL_STATIC_DRAW);
-			GL20.glEnableVertexAttribArray(1);
-			GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
+			GL20.glEnableVertexAttribArray(2);
+			GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, 0, 0);
 			
 			vboId = glGenBuffers();
 			vboIdList.add(vboId);
