@@ -10,6 +10,7 @@ import com.RuinedEngine.utils.Consts;
 public class Material {
 	private List<Mesh> meshList;
 	private String texturePath;
+	private String normalMapPath;
 	private Vector4f ambientColor;
 	private Vector4f diffuseColor;
 	private float reflectance;
@@ -18,6 +19,7 @@ public class Material {
 	public Material() {
 		diffuseColor = Consts.DEFAULT_COLOR;
 		ambientColor = Consts.DEFAULT_COLOR;
+		specularColor = Consts.DEFAULT_COLOR;
 		meshList = new ArrayList<>();
 	}
 	public void cleanup() {
@@ -55,6 +57,12 @@ public class Material {
 	}
 	public void setSpecularColor(Vector4f specularColor) {
 		this.specularColor = specularColor;
+	}
+	public String getNormalMapPath() {
+		return normalMapPath;
+	}
+	public void setNormalMapPath(String normalMapPath) {
+		this.normalMapPath = normalMapPath;
 	}
 	public void setMeshList(List<Mesh> meshList) {
 		this.meshList = meshList;

@@ -86,7 +86,7 @@ public class LightControls implements IGuiInstance{
     public void drawGui() {
         ImGui.newFrame();
         ImGui.setNextWindowPos(0, 0, ImGuiCond.Always);
-        ImGui.setNextWindowSize(450, 400);
+        ImGui.setNextWindowSize(900, 800);
 
         ImGui.begin("Lights controls");
         if (ImGui.collapsingHeader("Ambient Light")) {
@@ -114,10 +114,7 @@ public class LightControls implements IGuiInstance{
             ImGui.sliderFloat("Dir cone - y", dirConeY, -1.0f, 1.0f, "%.2f");
             ImGui.sliderFloat("Dir cone - z", dirConeZ, -1.0f, 1.0f, "%.2f");
         }
-        if(ImGui.collapsingHeader("Fuck You Hacker")) {
-        	ImGui.textColored(255,0,0, 100, "Fuckkkkkkkkkkkkkkkkkkkk You Nigger");
-        }
-
+        
         if (ImGui.collapsingHeader("Dir Light")) {
             ImGui.sliderFloat("Dir Light - x", dirLightX, -1.0f, 1.0f, "%.2f");
             ImGui.sliderFloat("Dir Light - y", dirLightY, -1.0f, 1.0f, "%.2f");

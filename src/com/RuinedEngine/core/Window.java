@@ -23,9 +23,11 @@ public class Window {
 			throw new IllegalStateException("Unable to initialize GLFW!");
 		}
 		GLFW.glfwDefaultWindowHints();
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_TRUE);
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
-		
+		if(opts.antiAliasing) {
+			GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
+		}
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
 		if(opts.compatibleProfile) {
@@ -52,6 +54,12 @@ public class Window {
 			keyCallBack(key, action)
 		);
 		GLFW.glfwMakeContextCurrent(windowHandle);
+		if(opts.fps > 0) {
+			GLFW.glfwSwapInterval(0);
+		}else {
+			GLFW.glfwSwapInterval(1);
+		}
+		GLFW.glfwShowWindow(windowHandle);
 		int[] arrWidth = new int[1];
 		int[] arrHeight = new int[1];
 		GLFW.glfwGetFramebufferSize(windowHandle, arrWidth, arrHeight);
@@ -115,6 +123,7 @@ public class Window {
 	}
 	
 	public static class WindowOptions{
+		public boolean antiAliasing;
 		public boolean compatibleProfile;
 		public int fps;
 		public int height;

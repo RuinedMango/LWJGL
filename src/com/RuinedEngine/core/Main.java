@@ -1,24 +1,17 @@
 package com.RuinedEngine.core;
 
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import com.RuinedEngine.GUI.IGuiInstance;
-import com.RuinedEngine.GUI.LightControls;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.ModelLoader;
-import com.RuinedEngine.lighting.PointLight;
+import com.RuinedEngine.lighting.DirLight;
 import com.RuinedEngine.lighting.SceneLights;
-import com.RuinedEngine.lighting.SpotLight;
 import com.RuinedEngine.utils.Consts;
 
-import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.flag.ImGuiCond;
-
-public class Main implements IAppLogic, IGuiInstance{
+public class Main implements IAppLogic{
+	private float lightAngle;
 	public static void main(String[] args) {
 		Main main = new Main();
 		Engine gameEng = new Engine("Noice", new Window.WindowOptions(), main);
@@ -32,77 +25,86 @@ public class Main implements IAppLogic, IGuiInstance{
 
 	@Override
 	public void init(Window window, Scene scene, Render render) {
-		Model cubeModel = ModelLoader.loadModel("cube-model", "resources/models/Knife/knife.obj", scene.getTextureCache());
-		scene.addModel(cubeModel);
-		
-		Entity cubeEntity = new Entity("cube-entity", cubeModel.getId());
-		cubeEntity.setPosition(0, 0, -2);
-		cubeEntity.updateModelMatrix();
-		scene.addEntity(cubeEntity);
-		
-		SceneLights sceneLights = new SceneLights();
-		sceneLights.getAmbientLight().setIntensity(0.3f);
-		scene.setSceneLights(sceneLights);
-		sceneLights.getPointLights().add(new PointLight(new Vector3f(1,1,1), new Vector3f(0,0,-1.4f), 1.0f));
-		Vector3f coneDir = new Vector3f(0,0,-1);
-		sceneLights.getSpotLights().add(new SpotLight(new PointLight(new Vector3f(1, 1, 1),new Vector3f(0, 0, -1.4f), 0.0f), coneDir, 140.0f));
-		
-		LightControls lightControls = new LightControls(scene);
-		scene.setGuiInstance(lightControls);
+        String wallNoNormalsModelId = "quad-no-normals-model";
+        Model quadModelNoNormals = ModelLoader.loadModel(wallNoNormalsModelId, "resources/models/wall/wall_nonormals.obj",
+                scene.getTextureCache());
+        scene.addModel(quadModelNoNormals);
+
+        Entity wallLeftEntity = new Entity("wallLeftEntity", wallNoNormalsModelId);
+        wallLeftEntity.setPosition(-3f, 0, 0);
+        wallLeftEntity.setScale(2.0f);
+        wallLeftEntity.updateModelMatrix();
+        scene.addEntity(wallLeftEntity);
+
+        String wallModelId = "quad-model";
+        Model quadModel = ModelLoader.loadModel(wallModelId, "resources/models/wall/wall.obj",
+                scene.getTextureCache());
+        scene.addModel(quadModel);
+
+        Entity wallRightEntity = new Entity("wallRightEntity", wallModelId);
+        wallRightEntity.setPosition(3f, 0, 0);
+        wallRightEntity.setScale(2.0f);
+        wallRightEntity.updateModelMatrix();
+        scene.addEntity(wallRightEntity);
+
+        SceneLights sceneLights = new SceneLights();
+        sceneLights.getAmbientLight().setIntensity(0.2f);
+        DirLight dirLight = sceneLights.getDirLight();
+        dirLight.setPosition(1, 1, 0);
+        dirLight.setIntensity(1.0f);
+        scene.setSceneLights(sceneLights);
+
+        Camera camera = scene.getCamera();
+        camera.moveUp(5.0f);
+        camera.addRotation((float) Math.toRadians(90), 0);
+
+        lightAngle = -35;
 	}
 
 	@Override
 	public void input(Window window, Scene scene, long diffTimeMillis, boolean inputConsumed) {
-		if(inputConsumed) {
-			return;
-		}
-		float move = diffTimeMillis * Consts.MOVEMENT_SPEED;
-		Camera camera = scene.getCamera();
-		if(window.isKeyPressed(GLFW.GLFW_KEY_W)) {
-			camera.moveForward(move);
-		}else if(window.isKeyPressed(GLFW.GLFW_KEY_S)) {
-			camera.moveBackwards(move);
-		}
-		if(window.isKeyPressed(GLFW.GLFW_KEY_A)) {
-			camera.moveRight(move);
-		}else if(window.isKeyPressed(GLFW.GLFW_KEY_D)) {
-			camera.moveLeft(move);
-		}
-		if(window.isKeyPressed(GLFW.GLFW_KEY_UP)) {
-			camera.moveUp(move);
-		}else if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
-			camera.moveDown(move);
-		}
-		MouseInput mouseInput = window.getMouseInput();
-		if(mouseInput.isRightButtonPressed()) {
-			Vector2f displVec = mouseInput.getDisplVec();
-			camera.addRotation((float) Math.toRadians(-displVec.x * Consts.MOUSE_SENSITIVITY), (float) Math.toRadians(-displVec.y * Consts.MOUSE_SENSITIVITY));
-		}
+        if (inputConsumed) {
+            return;
+        }
+        float move = diffTimeMillis * Consts.MOVEMENT_SPEED;
+        Camera camera = scene.getCamera();
+        if (window.isKeyPressed(GLFW.GLFW_KEY_W)) {
+            camera.moveForward(move);
+        } else if (window.isKeyPressed(GLFW.GLFW_KEY_S)) {
+            camera.moveBackwards(move);
+        }
+        if (window.isKeyPressed(GLFW.GLFW_KEY_A)) {
+            camera.moveLeft(move);
+        } else if (window.isKeyPressed(GLFW.GLFW_KEY_D)) {
+            camera.moveRight(move);
+        }
+        if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
+            lightAngle -= 2.5f;
+            if (lightAngle < -90) {
+                lightAngle = -90;
+            }
+        } else if (window.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
+            lightAngle += 2.5f;
+            if (lightAngle > 90) {
+                lightAngle = 90;
+            }
+        }
+
+        MouseInput mouseInput = window.getMouseInput();
+        if (mouseInput.isRightButtonPressed()) {
+            Vector2f displVec = mouseInput.getDisplVec();
+            camera.addRotation((float) Math.toRadians(-displVec.x * Consts.MOUSE_SENSITIVITY), (float) Math.toRadians(-displVec.y * Consts.MOUSE_SENSITIVITY));
+        }
+
+        SceneLights sceneLights = scene.getSceneLights();
+        DirLight dirLight = sceneLights.getDirLight();
+        double angRad = Math.toRadians(lightAngle);
+        dirLight.getDirection().x = (float) Math.sin(angRad);
+        dirLight.getDirection().y = (float) Math.cos(angRad);
 	}
 
 	@Override
 	public void update(Window window, Scene scene, long diffTimeMillis) {
-   // TODO document why this method is empty
-	}
 
-	@Override
-	public void drawGui() {
-		ImGui.newFrame();
-		ImGui.setNextWindowPos(0,0,ImGuiCond.Always);
-		ImGui.showUserGuide();
-		ImGui.endFrame();
-		ImGui.render();
 	}
-
-	@Override
-	public boolean handleGuiInput(Scene scene, Window window) {
-		ImGuiIO imGuiIO = ImGui.getIO();
-		MouseInput mouseInput = window.getMouseInput();
-		Vector2f mousePos = mouseInput.getCurrentPos();
-		imGuiIO.setMousePos(mousePos.x, mousePos.y);
-		imGuiIO.setMouseDown(0, mouseInput.isLeftButtonPressed());
-		imGuiIO.setMouseDown(1, mouseInput.isRightButtonPressed());
-		return imGuiIO.getWantCaptureMouse() || imGuiIO.getWantCaptureKeyboard();
-	}
-
 }

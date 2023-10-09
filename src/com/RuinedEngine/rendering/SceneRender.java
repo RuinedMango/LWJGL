@@ -9,9 +9,11 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.RuinedEngine.VFX.Fog;
 import com.RuinedEngine.core.Scene;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Material;
@@ -44,10 +46,12 @@ public class SceneRender {
 		uniformsMap.createUniform("viewMatrix");
 		uniformsMap.createUniform("modelMatrix");
 		uniformsMap.createUniform("txtSampler");
+		uniformsMap.createUniform("normalSampler");
 		uniformsMap.createUniform("material.ambient");
 		uniformsMap.createUniform("material.diffuse");
 		uniformsMap.createUniform("material.specular");
 		uniformsMap.createUniform("material.reflectance");
+		uniformsMap.createUniform("material.hasNormalMap");
 		uniformsMap.createUniform("ambientLight.factor");
 		uniformsMap.createUniform("ambientLight.color");
 		for(int i = 0; i < Consts.MAX_POINT_LIGHTS; i++) {
@@ -73,6 +77,9 @@ public class SceneRender {
 		uniformsMap.createUniform("dirLight.color");
 		uniformsMap.createUniform("dirLight.direction");
 		uniformsMap.createUniform("dirLight.intensity");
+		uniformsMap.createUniform("fog.activeFog");
+		uniformsMap.createUniform("fog.color");
+		uniformsMap.createUniform("fog.density");
 	}
 	private void updateLights(Scene scene) {
 		Matrix4f viewMatrix = scene.getCamera().getViewMatrix();
@@ -86,7 +93,7 @@ public class SceneRender {
 		auxDir.mul(viewMatrix);
 		Vector3f dir = new Vector3f(auxDir.x, auxDir.y, auxDir.z);
 		uniformsMap.setUniform("dirLight.color", dirLight.getColor());
-		uniformsMap.setUniform("dirLight.direction", dirLight.getDirection());
+		uniformsMap.setUniform("dirLight.direction", dir);
 		uniformsMap.setUniform("dirLight.intensity", dirLight.getIntensity());
 		List<PointLight> pointLights = sceneLights.getPointLights();
 		int numPointLights = pointLights.size();
@@ -156,13 +163,24 @@ public class SceneRender {
 		shaderProgram.cleanup();
 	}
 	public void render(Scene scene) {
+		GL11.glEnable(GL11.GL_BLEND);
+		GL14.glBlendEquation(GL14.GL_FUNC_ADD);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		shaderProgram.bind();
-		updateLights(scene);
 		
 		uniformsMap.setUniform("projectionMatrix", scene.getProjection().getProjMatrix());
 		uniformsMap.setUniform("viewMatrix", scene.getCamera().getViewMatrix());
 		uniformsMap.setUniform("txtSampler", 0);
+		uniformsMap.setUniform("normalSampler", 1);
 		
+		updateLights(scene);
+		
+		Fog fog = scene.getFog();
+		uniformsMap.setUniform("fog.activeFog", fog.isActive() ? 1 : 0);
+		uniformsMap.setUniform("fog.color", fog.getColor());
+		uniformsMap.setUniform("fog.density", fog.getDensity());
+		
+
 		Collection<Model> models = scene.getModelMap().values();
 		TextureCache textureCache = scene.getTextureCache();
 		for(Model model : models) {
@@ -173,9 +191,18 @@ public class SceneRender {
 				uniformsMap.setUniform("material.diffuse", material.getDiffuseColor());
 				uniformsMap.setUniform("material.specular", material.getSpecularColor());
 				uniformsMap.setUniform("material.reflectance", material.getReflectance());
+				String normalMapPath = material.getNormalMapPath();
+				boolean hasNormalMapPath = normalMapPath != null;
+				uniformsMap.setUniform("material.hasNormalMap", hasNormalMapPath ? 1 : 0);
 				Texture texture = textureCache.getTexture(material.getTexturePath());
-				GL13.glActiveTexture(GL11.GL_TEXTURE);
+				GL13.glActiveTexture(GL13.GL_TEXTURE0);
 				texture.bind();
+				if(hasNormalMapPath) {
+					Texture normalMapTexture = textureCache.getTexture(normalMapPath);
+					GL13.glActiveTexture(GL13.GL_TEXTURE1);
+					normalMapTexture.bind();
+				}
+
 				
 				for(Mesh mesh : material.getMeshList()) {
 					GL30.glBindVertexArray(mesh.getVaoId());
@@ -188,6 +215,7 @@ public class SceneRender {
 		}
 		
 		GL30.glBindVertexArray(0);
+		
 		shaderProgram.unbind();
 	}
 }

@@ -47,12 +47,12 @@ public class Camera {
 	}
 	public void moveLeft(float inc) {
 		viewMatrix.positiveX(right).mul(inc);
-		position.add(right);
+		position.sub(right);
 		recalculate();
 	}
 	public void moveRight(float inc) {
 		viewMatrix.positiveX(right).mul(inc);
-		position.sub(right);
+		position.add(right);
 		recalculate();
 	}
 	public void moveUp(float inc) {

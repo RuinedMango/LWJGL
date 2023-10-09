@@ -20,6 +20,9 @@ public class AmbientLight {
 	public void setColor(float r, float g, float b) {
 		color.set(r,g,b);
 	}
+	public void setColor(Vector3f color) {
+		this.color = color;
+	}
 	public float getIntensity() {
 		return intensity;
 	}

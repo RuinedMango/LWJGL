@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.RuinedEngine.GUI.IGuiInstance;
+import com.RuinedEngine.VFX.Fog;
+import com.RuinedEngine.VFX.SkyBox;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.lighting.SceneLights;
@@ -15,6 +17,8 @@ public class Scene {
 	private Projection projection;
 	private TextureCache textureCache;
 	private Camera camera;
+	private SkyBox skyBox;
+	private Fog fog;
 	private IGuiInstance guiInstance;
 	private SceneLights sceneLights;
 	public Scene( int width, int height) {
@@ -22,6 +26,7 @@ public class Scene {
 		projection = new Projection(width, height);
 		textureCache = new TextureCache();
 		camera = new Camera();
+		fog = new Fog();
 	}
 	
 	public void addEntity(Entity entity) {
@@ -53,6 +58,9 @@ public class Scene {
 	public IGuiInstance getGuiInstance() {
 		return guiInstance;
 	}
+	public SkyBox getSkyBox() {
+		return skyBox;
+	}
 	public TextureCache getTextureCache() {
 		return textureCache;
 	}
@@ -61,6 +69,15 @@ public class Scene {
 	}
 	public void setSceneLights(SceneLights sceneLights) {
 		this.sceneLights = sceneLights;
+	}
+	public void setSkyBox(SkyBox skyBox) {
+		this.skyBox = skyBox;
+	}
+	public Fog getFog() {
+		return fog;
+	}
+	public void setFog(Fog fog) {
+		this.fog = fog;
 	}
 	public void resize(int width, int height) {
 		projection.updateProjMatrix(width, height);
