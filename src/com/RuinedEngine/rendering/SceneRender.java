@@ -21,10 +21,12 @@ import com.RuinedEngine.entity.Mesh;
 import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.Texture;
 import com.RuinedEngine.lighting.AmbientLight;
+import com.RuinedEngine.lighting.CascadeShadow;
 import com.RuinedEngine.lighting.DirLight;
 import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.lighting.SceneLights;
 import com.RuinedEngine.lighting.SpotLight;
+import com.RuinedEngine.utils.AnimationData;
 import com.RuinedEngine.utils.Consts;
 import com.RuinedEngine.utils.TextureCache;
 import com.RuinedEngine.utils.UniformsMap;
@@ -42,6 +44,7 @@ public class SceneRender {
 	}
 	private void createUniforms() {
 		uniformsMap = new UniformsMap(shaderProgram.getProgramId());
+		uniformsMap.createUniform("bonesMatrices");
 		uniformsMap.createUniform("projectionMatrix");
 		uniformsMap.createUniform("viewMatrix");
 		uniformsMap.createUniform("modelMatrix");
@@ -80,6 +83,11 @@ public class SceneRender {
 		uniformsMap.createUniform("fog.activeFog");
 		uniformsMap.createUniform("fog.color");
 		uniformsMap.createUniform("fog.density");
+		for(int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++) {
+			uniformsMap.createUniform("shadowMap_" + i);
+			uniformsMap.createUniform("cascadeshadows["+i+"]" + ".projViewMatrix");
+			uniformsMap.createUniform("cascadeshadows["+i+"]" + ".splitDistance");
+		}
 	}
 	private void updateLights(Scene scene) {
 		Matrix4f viewMatrix = scene.getCamera().getViewMatrix();
@@ -162,7 +170,7 @@ public class SceneRender {
 	public void cleanup() {
 		shaderProgram.cleanup();
 	}
-	public void render(Scene scene) {
+	public void render(Scene scene, ShadowRender shadowRender) {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL14.glBlendEquation(GL14.GL_FUNC_ADD);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -172,6 +180,17 @@ public class SceneRender {
 		uniformsMap.setUniform("viewMatrix", scene.getCamera().getViewMatrix());
 		uniformsMap.setUniform("txtSampler", 0);
 		uniformsMap.setUniform("normalSampler", 1);
+		
+		int start = 2;
+		List<CascadeShadow> cascadeShadows = shadowRender.getCascadeShadow();
+		for(int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++) {
+			uniformsMap.setUniform("shadowMap_"+i, start+i);
+			CascadeShadow cascadeShadow = cascadeShadows.get(i);
+			uniformsMap.setUniform("cascadeshadows["+i+"]" + ".projViewMatrix", cascadeShadow.getProjViewMatrix());
+			uniformsMap.setUniform("cascadeshadows["+i+"]" + ".splitDistance", cascadeShadow.getSplitDistance());
+		}
+		
+		shadowRender.getShadowBuffer().bindTextures(GL20.GL_TEXTURE2);
 		
 		updateLights(scene);
 		
@@ -208,6 +227,12 @@ public class SceneRender {
 					GL30.glBindVertexArray(mesh.getVaoId());
 					for(Entity entity : entities) {
 						uniformsMap.setUniform("modelMatrix", entity.getModelMatrix());
+						AnimationData animationData = entity.getAnimationData();
+						if(animationData == null) {
+							uniformsMap.setUniform("bonesMatrices", AnimationData.DEFAULT_BONES_MATRICES);
+						}else {
+							uniformsMap.setUniform("bonesMatrices", animationData.getCurrentFrame().boneMatrices());
+						}
 						GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getNumVertices(), GL11.GL_UNSIGNED_INT, 0);
 					}
 				}

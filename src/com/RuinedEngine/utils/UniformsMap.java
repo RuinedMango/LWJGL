@@ -1,5 +1,6 @@
 package com.RuinedEngine.utils;
 
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,16 @@ public class UniformsMap {
 	public void setUniform(String uniformName, Matrix4f value) {
 		try(MemoryStack stack = MemoryStack.stackPush()){
 			GL20.glUniformMatrix4fv(getUniformLocation(uniformName), false, value.get(stack.mallocFloat(16)));
+		}
+	}
+	public void setUniform(String uniformName, Matrix4f[] matrices) {
+		try(MemoryStack stack = MemoryStack.stackPush()){
+			int length = matrices != null ? matrices.length : 0;
+			FloatBuffer fb = stack.mallocFloat(16 * length);
+			for(int i = 0; i < length; i++) {
+				matrices[i].get(16 * i, fb);
+			}
+			GL20.glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
 		}
 	}
 	public void setUniform(String uniformName, Vector4f value) {

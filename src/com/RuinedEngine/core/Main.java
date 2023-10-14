@@ -1,19 +1,27 @@
 package com.RuinedEngine.core;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import com.RuinedEngine.VFX.Fog;
+import com.RuinedEngine.VFX.SkyBox;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.ModelLoader;
+import com.RuinedEngine.lighting.AmbientLight;
 import com.RuinedEngine.lighting.DirLight;
 import com.RuinedEngine.lighting.SceneLights;
+import com.RuinedEngine.utils.AnimationData;
 import com.RuinedEngine.utils.Consts;
 
 public class Main implements IAppLogic{
 	private float lightAngle;
+	private AnimationData animationData;
 	public static void main(String[] args) {
 		Main main = new Main();
+		Window.WindowOptions opts = new Window.WindowOptions();
+		opts.antiAliasing = true;
 		Engine gameEng = new Engine("Noice", new Window.WindowOptions(), main);
 		gameEng.start();
 	}
@@ -25,40 +33,48 @@ public class Main implements IAppLogic{
 
 	@Override
 	public void init(Window window, Scene scene, Render render) {
-        String wallNoNormalsModelId = "quad-no-normals-model";
-        Model quadModelNoNormals = ModelLoader.loadModel(wallNoNormalsModelId, "resources/models/wall/wall_nonormals.obj",
-                scene.getTextureCache());
-        scene.addModel(quadModelNoNormals);
+		String terrainModelId = "terrain";
+        Model terrainModel = ModelLoader.loadModel(terrainModelId, "resources/models/terrain/quad.obj",
+                scene.getTextureCache(), false);
+        scene.addModel(terrainModel);
+        Entity terrainEntity = new Entity("terrainEntity", terrainModelId);
+        terrainEntity.setScale(100.0f);
+        terrainEntity.updateModelMatrix();
+        scene.addEntity(terrainEntity);
 
-        Entity wallLeftEntity = new Entity("wallLeftEntity", wallNoNormalsModelId);
-        wallLeftEntity.setPosition(-3f, 0, 0);
-        wallLeftEntity.setScale(2.0f);
-        wallLeftEntity.updateModelMatrix();
-        scene.addEntity(wallLeftEntity);
-
-        String wallModelId = "quad-model";
-        Model quadModel = ModelLoader.loadModel(wallModelId, "resources/models/wall/wall.obj",
-                scene.getTextureCache());
-        scene.addModel(quadModel);
-
-        Entity wallRightEntity = new Entity("wallRightEntity", wallModelId);
-        wallRightEntity.setPosition(3f, 0, 0);
-        wallRightEntity.setScale(2.0f);
-        wallRightEntity.updateModelMatrix();
-        scene.addEntity(wallRightEntity);
+        String bobModelId = "bobModel";
+        Model bobModel = ModelLoader.loadModel(bobModelId, "resources/models/bob/boblamp.md5mesh",
+                scene.getTextureCache(), true);
+        scene.addModel(bobModel);
+        Entity bobEntity = new Entity("bobEntity", bobModelId);
+        bobEntity.setScale(0.05f);
+        bobEntity.updateModelMatrix();
+        animationData = new AnimationData(bobModel.getAnimationList().get(0));
+        bobEntity.setAnimationData(animationData);
+        scene.addEntity(bobEntity);
 
         SceneLights sceneLights = new SceneLights();
-        sceneLights.getAmbientLight().setIntensity(0.2f);
+        AmbientLight ambientLight = sceneLights.getAmbientLight();
+        ambientLight.setIntensity(0.5f);
+        ambientLight.setColor(0.3f, 0.3f, 0.3f);
+
         DirLight dirLight = sceneLights.getDirLight();
-        dirLight.setPosition(1, 1, 0);
+        dirLight.setPosition(0, 1, 0);
         dirLight.setIntensity(1.0f);
         scene.setSceneLights(sceneLights);
 
-        Camera camera = scene.getCamera();
-        camera.moveUp(5.0f);
-        camera.addRotation((float) Math.toRadians(90), 0);
+        SkyBox skyBox = new SkyBox("resources/models/skybox/skybox.obj", scene.getTextureCache());
+        skyBox.getSkyBoxEntity().setScale(100);
+        skyBox.getSkyBoxEntity().updateModelMatrix();
+        scene.setSkyBox(skyBox);
 
-        lightAngle = -35;
+        scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.02f));
+
+        Camera camera = scene.getCamera();
+        camera.setPosition(-1.5f, 3.0f, 4.5f);
+        camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
+
+        lightAngle = 0;
 	}
 
 	@Override
@@ -105,6 +121,6 @@ public class Main implements IAppLogic{
 
 	@Override
 	public void update(Window window, Scene scene, long diffTimeMillis) {
-
+		animationData.nextFrame();
 	}
 }

@@ -17,8 +17,14 @@ public class Mesh {
 	private int numVertices;
 	private int vaoId;
 	private List<Integer> vboIdList;
+	public static final int MAX_WEIGHTS = 4;
 	
 	public Mesh(float[] positions, float[] normals, float[] tangents, float[] bitangents,float[] textCoords, int[] indices) {
+		this(positions, normals, tangents, bitangents, textCoords, indices, 
+				new int[Mesh.MAX_WEIGHTS * positions.length / 3], new float[Mesh.MAX_WEIGHTS * positions.length / 3]);
+	}
+	
+	public Mesh(float[] positions, float[] normals, float[] tangents, float[] bitangents,float[] textCoords, int[] indices, int[] boneIndices, float[] weights) {
 		try(MemoryStack stack = MemoryStack.stackPush()){
 			numVertices = indices.length;
 			vboIdList = new ArrayList<>();
@@ -75,6 +81,26 @@ public class Mesh {
 			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, textCoordsBuffer, GL15.GL_STATIC_DRAW);
 			GL20.glEnableVertexAttribArray(4);
 			GL20.glVertexAttribPointer(4, 2, GL11.GL_FLOAT, false, 0, 0);
+			
+			//Bone weights
+			vboId = glGenBuffers();
+			vboIdList.add(vboId);
+			FloatBuffer weightsBuffer = stack.callocFloat(weights.length);
+			weightsBuffer.put(weights).flip();
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, weightsBuffer, GL15.GL_STATIC_DRAW);
+			GL20.glEnableVertexAttribArray(5);
+			GL20.glVertexAttribPointer(5, 4, GL11.GL_FLOAT, false, 0, 0);
+			
+			//Bone indices
+			vboId = glGenBuffers();
+			vboIdList.add(vboId);
+			IntBuffer boneIndicesBuffer = stack.callocInt(boneIndices.length);
+			boneIndicesBuffer.put(boneIndices).flip();
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, boneIndicesBuffer, GL15.GL_STATIC_DRAW);
+			GL20.glEnableVertexAttribArray(6);
+			GL20.glVertexAttribPointer(6, 4, GL11.GL_FLOAT, false, 0, 0);
 			
 			//Index VBO
 			vboId = glGenBuffers();

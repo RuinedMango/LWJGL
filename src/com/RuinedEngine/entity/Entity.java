@@ -4,6 +4,8 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import com.RuinedEngine.utils.AnimationData;
+
 public class Entity {
 	private final String id;
 	private final String modelId;
@@ -11,6 +13,7 @@ public class Entity {
 	private Vector3f position;
 	private Quaternionf rotation;
 	private float scale;
+	private AnimationData animationData;
 	
 	public Entity(String id, String modelId) {
 		this.id = id;
@@ -58,6 +61,15 @@ public class Entity {
 	public void setScale(float scale) {
 		this.scale = scale;
 	}
+	
+	public AnimationData getAnimationData() {
+		return animationData;
+	}
+
+	public void setAnimationData(AnimationData animationData) {
+		this.animationData = animationData;
+	}
+
 	public void updateModelMatrix() {
 		modelMatrix.translationRotateScale(position, rotation, scale);
 	}
