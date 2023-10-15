@@ -15,20 +15,22 @@ uniform mat4 modelMatrix;
 uniform mat4 projViewMatrix;
 uniform mat4 bonesMatrices[MAX_BONES];
 
-void main(){
-    vec4 initPos = vec4(0,0,0,0);
+void main()
+{
+    vec4 initPos = vec4(0, 0, 0, 0);
     int count = 0;
-    for(int i = 0; i < MAX_WEIGHTS; i++){
+    for (int i = 0; i < MAX_WEIGHTS; i++) {
         float weight = boneWeights[i];
-        if(weight > 0){
+        if (weight > 0) {
             count++;
             int boneIndex = boneIndices[i];
             vec4 tmpPos = bonesMatrices[boneIndex] * vec4(position, 1.0);
             initPos += weight * tmpPos;
         }
     }
-    if(count == 0){
+    if (count == 0) {
         initPos = vec4(position, 1.0);
     }
+
     gl_Position = projViewMatrix * modelMatrix * initPos;
 }

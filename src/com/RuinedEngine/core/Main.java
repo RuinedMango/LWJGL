@@ -74,7 +74,7 @@ public class Main implements IAppLogic{
         camera.setPosition(-1.5f, 3.0f, 4.5f);
         camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
 
-        lightAngle = 0;
+        lightAngle = 45.001f;
 	}
 
 	@Override
