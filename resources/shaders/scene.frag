@@ -77,6 +77,7 @@ uniform CascadeShadow cascadeshadows[NUM_CASCADES];
 uniform sampler2D shadowMap_0;
 uniform sampler2D shadowMap_1;
 uniform sampler2D shadowMap_2;
+uniform int selected;
 
 vec4 calcAmbient(AmbientLight ambientLight, vec4 ambient) {
     return vec4(ambientLight.factor * ambientLight.color, 1) * ambient;
@@ -233,5 +234,8 @@ void main() {
             fragColor.rgb *= vec3(1.0f, 1.0f, 0.25f);
             break;
         }
+    }
+    if(selected > 0){
+        fragColor = vec4(fragColor.x, fragColor.y, 1, 1);
     }
 }

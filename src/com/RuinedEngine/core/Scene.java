@@ -21,6 +21,8 @@ public class Scene {
 	private Fog fog;
 	private IGuiInstance guiInstance;
 	private SceneLights sceneLights;
+	private Entity selectedEntity;
+	
 	public Scene( int width, int height) {
 		modelMap = new HashMap<>();
 		projection = new Projection(width, height);
@@ -78,6 +80,13 @@ public class Scene {
 	}
 	public void setFog(Fog fog) {
 		this.fog = fog;
+	}
+	public Entity getSelectedEntity() {
+		return selectedEntity;
+	}
+
+	public void setSelectedEntity(Entity selectedEntity) {
+		this.selectedEntity = selectedEntity;
 	}
 	public void resize(int width, int height) {
 		projection.updateProjMatrix(width, height);

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.RuinedEngine.core.Scene;
@@ -25,7 +26,7 @@ public class ShadowRender {
 
     public ShadowRender() {
         List<ShaderProgram.ShaderModuleData> shaderModuleDataList = new ArrayList<>();
-        shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/shadow.vert", GL30.GL_VERTEX_SHADER));
+        shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/shadow.vert", GL20.GL_VERTEX_SHADER));
         shaderProgram = new ShaderProgram(shaderModuleDataList);
 
         shadowBuffer = new ShadowBuffer();
@@ -63,14 +64,14 @@ public class ShadowRender {
         CascadeShadow.updateCascadeShadows(cascadeShadows, scene);
 
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, shadowBuffer.getDepthMapFBO());
-        GL30.glViewport(0, 0, ShadowBuffer.SHADOW_MAP_WIDTH, ShadowBuffer.SHADOW_MAP_HEIGHT);
+        GL11.glViewport(0, 0, ShadowBuffer.SHADOW_MAP_WIDTH, ShadowBuffer.SHADOW_MAP_HEIGHT);
 
         shaderProgram.bind();
 
         Collection<Model> models = scene.getModelMap().values();
         for (int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++) {
-            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_TEXTURE_2D, shadowBuffer.getDepthMapTexture().getIds()[i], 0);
-            GL30.glClear(GL30.GL_DEPTH_BUFFER_BIT);
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, shadowBuffer.getDepthMapTexture().getIds()[i], 0);
+            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
             CascadeShadow shadowCascade = cascadeShadows.get(i);
             uniformsMap.setUniform("projViewMatrix", shadowCascade.getProjViewMatrix());
@@ -88,7 +89,7 @@ public class ShadowRender {
                             } else {
                                 uniformsMap.setUniform("bonesMatrices", animationData.getCurrentFrame().boneMatrices());
                             }
-                            GL30.glDrawElements(GL11.GL_TRIANGLES, mesh.getNumVertices(), GL11.GL_UNSIGNED_INT, 0);
+                            GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getNumVertices(), GL11.GL_UNSIGNED_INT, 0);
                         }
                     }
                 }

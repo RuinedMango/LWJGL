@@ -10,8 +10,10 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIAABB;
 import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIColor4D;
@@ -46,7 +48,7 @@ public class ModelLoader {
 	public static Model loadModel(String modelId, String modelPath, TextureCache textureCache, boolean animation) {
 		return loadModel(modelId, modelPath, textureCache, Assimp.aiProcess_GenSmoothNormals | Assimp.aiProcess_JoinIdenticalVertices |
 				Assimp.aiProcess_Triangulate | Assimp.aiProcess_FixInfacingNormals | Assimp.aiProcess_CalcTangentSpace | Assimp.aiProcess_LimitBoneWeights |
-				(animation ? 0 : Assimp.aiProcess_PreTransformVertices));
+				Assimp.aiProcess_GenBoundingBoxes | (animation ? 0 : Assimp.aiProcess_PreTransformVertices));
 	}
 	public static Model loadModel(String modelId, String modelPath, TextureCache textureCache, int flags) {
 		File file = new File(modelPath);
@@ -210,7 +212,13 @@ public class ModelLoader {
 			int numElements = (vertices.length / 3) * 2;
 			textCoords = new float[numElements];
 		}
-		return new Mesh(vertices, normals, tangents, bitangents, textCoords, indices, animMeshData.boneIds, animMeshData.weights);
+		
+		AIAABB aabb = aiMesh.mAABB();
+		Vector3f aabbMin = new Vector3f(aabb.mMin().x(), aabb.mMin().y(), aabb.mMin().z());
+		Vector3f aabbMax = new Vector3f(aabb.mMax().x(), aabb.mMax().y(), aabb.mMax().z());
+
+		
+		return new Mesh(vertices, normals, tangents, bitangents, textCoords, indices, animMeshData.boneIds, animMeshData.weights, aabbMin, aabbMax);
 	}
 	private static AnimMeshData processBones(AIMesh aiMesh, List<Bone> boneList) {
 		List<Integer> boneIds = new ArrayList<>();

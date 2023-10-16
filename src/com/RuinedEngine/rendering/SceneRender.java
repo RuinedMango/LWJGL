@@ -27,7 +27,6 @@ import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.lighting.SceneLights;
 import com.RuinedEngine.lighting.SpotLight;
 import com.RuinedEngine.utils.AnimationData;
-import com.RuinedEngine.utils.Consts;
 import com.RuinedEngine.utils.TextureCache;
 import com.RuinedEngine.utils.UniformsMap;
 
@@ -41,8 +40,8 @@ public class SceneRender {
 
     public SceneRender() {
         List<ShaderProgram.ShaderModuleData> shaderModuleDataList = new ArrayList<>();
-        shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/scene.vert", GL30.GL_VERTEX_SHADER));
-        shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/scene.frag", GL30.GL_FRAGMENT_SHADER));
+        shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/scene.vert", GL20.GL_VERTEX_SHADER));
+        shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/scene.frag", GL20.GL_FRAGMENT_SHADER));
         shaderProgram = new ShaderProgram(shaderModuleDataList);
         createUniforms();
     }
@@ -101,12 +100,13 @@ public class SceneRender {
             uniformsMap.createUniform("cascadeshadows[" + i + "]" + ".projViewMatrix");
             uniformsMap.createUniform("cascadeshadows[" + i + "]" + ".splitDistance");
         }
+        uniformsMap.createUniform("selected");
     }
 
     public void render(Scene scene, ShadowRender shadowRender) {
-    	GL30.glEnable(GL30.GL_BLEND);
-    	GL30.glBlendEquation(GL30.GL_FUNC_ADD);
-    	GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+    	GL11.glEnable(GL11.GL_BLEND);
+    	GL14.glBlendEquation(GL14.GL_FUNC_ADD);
+    	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         shaderProgram.bind();
 
         uniformsMap.setUniform("projectionMatrix", scene.getProjection().getProjMatrix());
@@ -131,10 +131,11 @@ public class SceneRender {
             uniformsMap.setUniform("cascadeshadows[" + i + "]" + ".splitDistance", cascadeShadow.getSplitDistance());
         }
 
-        shadowRender.getShadowBuffer().bindTextures(GL30.GL_TEXTURE2);
+        shadowRender.getShadowBuffer().bindTextures(GL13.GL_TEXTURE2);
 
         Collection<Model> models = scene.getModelMap().values();
         TextureCache textureCache = scene.getTextureCache();
+        Entity selectedEntity = scene.getSelectedEntity();
         for (Model model : models) {
             List<Entity> entities = model.getEntitiesList();
 
@@ -147,17 +148,18 @@ public class SceneRender {
                 boolean hasNormalMapPath = normalMapPath != null;
                 uniformsMap.setUniform("material.hasNormalMap", hasNormalMapPath ? 1 : 0);
                 Texture texture = textureCache.getTexture(material.getTexturePath());
-                GL30.glActiveTexture(GL30.GL_TEXTURE0);
+                GL13.glActiveTexture(GL13.GL_TEXTURE0);
                 texture.bind();
                 if (hasNormalMapPath) {
                     Texture normalMapTexture = textureCache.getTexture(normalMapPath);
-                    GL30.glActiveTexture(GL30.GL_TEXTURE1);
+                    GL13.glActiveTexture(GL13.GL_TEXTURE1);
                     normalMapTexture.bind();
                 }
 
                 for (Mesh mesh : material.getMeshList()) {
                 	GL30.glBindVertexArray(mesh.getVaoId());
                     for (Entity entity : entities) {
+                    	uniformsMap.setUniform("selected", selectedEntity != null && selectedEntity.getId().equals(entity.getId()) ? 1 : 0);
                         uniformsMap.setUniform("modelMatrix", entity.getModelMatrix());
                         AnimationData animationData = entity.getAnimationData();
                         if (animationData == null) {
@@ -165,7 +167,7 @@ public class SceneRender {
                         } else {
                             uniformsMap.setUniform("bonesMatrices", animationData.getCurrentFrame().boneMatrices());
                         }
-                        GL30.glDrawElements(GL30.GL_TRIANGLES, mesh.getNumVertices(), GL30.GL_UNSIGNED_INT, 0);
+                        GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getNumVertices(), GL11.GL_UNSIGNED_INT, 0);
                     }
                 }
             }
