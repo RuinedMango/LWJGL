@@ -135,6 +135,14 @@ public class Window {
 		GLFW.glfwSetWindowIcon(this.windowHandle, imagebf);
 	}
 	
+	public void setCursorIcon(String iconPath, int xhot, int yhot) {
+		ImageParser icon = ImageParser.load_image(iconPath);
+		GLFWImage image = GLFWImage.malloc();
+		image.set(icon.get_width(), icon.get_heigh(), icon.get_image());
+		long cursor = GLFW.glfwCreateCursor(image, xhot, yhot);
+		GLFW.glfwSetCursor(windowHandle, cursor);
+	}
+	
 	public static class WindowOptions{
 		public boolean antiAliasing;
 		public boolean compatibleProfile;

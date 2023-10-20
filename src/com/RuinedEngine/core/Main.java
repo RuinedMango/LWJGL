@@ -25,7 +25,8 @@ public class Main implements IAppLogic {
         Window.WindowOptions opts = new Window.WindowOptions();
         opts.antiAliasing = true;
         Engine gameEng = new Engine("RuinedEngine", opts, main);
-        gameEng.getWindow().setIcon(null);
+        gameEng.getWindow().setIcon("resources/icon.png");
+        gameEng.getWindow().setCursorIcon("resources/icon.png", 0, 0);
         gameEng.start();
     }
 

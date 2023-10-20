@@ -37,7 +37,7 @@ public class ImageParser {
 
             image = STBImage.stbi_load(path, w, h, comp, 4);
             if (image == null) {
-                // throw new resource_error("Could not load image resources.");
+                throw new RuntimeException("Could not load icon resources. From path: " + path);
             }
             width = w.get();
             heigh = h.get();
