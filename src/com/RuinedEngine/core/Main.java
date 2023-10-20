@@ -24,7 +24,8 @@ public class Main implements IAppLogic {
         Main main = new Main();
         Window.WindowOptions opts = new Window.WindowOptions();
         opts.antiAliasing = true;
-        Engine gameEng = new Engine("chapter-19", opts, main);
+        Engine gameEng = new Engine("RuinedEngine", opts, main);
+        gameEng.getWindow().setIcon(null);
         gameEng.start();
     }
 

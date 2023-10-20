@@ -73,6 +73,9 @@ public class Engine {
 		}
 		cleanup();
 	}
+	public Window getWindow() {
+		return this.window;
+	}
 	public void start() {
 		running = true;
 		run();

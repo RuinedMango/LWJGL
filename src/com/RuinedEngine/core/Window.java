@@ -1,11 +1,15 @@
 package com.RuinedEngine.core;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
+
+import com.RuinedEngine.utils.ImageParser;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -120,6 +124,15 @@ public class Window {
 	
 	public boolean windowShouldClose() {
 		return GLFW.glfwWindowShouldClose(windowHandle);
+	}
+	
+	public void setIcon(String iconPath) {
+		ImageParser icon = ImageParser.load_image(iconPath);
+		GLFWImage image = GLFWImage.malloc();
+		GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
+		image.set(icon.get_width(), icon.get_heigh(), icon.get_image());
+		imagebf.put(0, image);
+		GLFW.glfwSetWindowIcon(this.windowHandle, imagebf);
 	}
 	
 	public static class WindowOptions{
