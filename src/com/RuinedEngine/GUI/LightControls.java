@@ -87,11 +87,13 @@ public class LightControls implements IGuiInstance{
         ImGui.newFrame();
         ImGui.setNextWindowPos(0, 0, ImGuiCond.Always);
         ImGui.setNextWindowSize(900, 800);
+        
 
         ImGui.begin("Lights controls");
         if (ImGui.collapsingHeader("Ambient Light")) {
             ImGui.sliderFloat("Ambient factor", ambientFactor, 0.0f, 1.0f, "%.2f");
             ImGui.colorEdit3("Ambient color", ambientColor);
+            ImGui.progressBar(59, 0, 0);
         }
 
         if (ImGui.collapsingHeader("Point Light")) {

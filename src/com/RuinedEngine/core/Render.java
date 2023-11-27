@@ -3,6 +3,7 @@ package com.RuinedEngine.core;
 import com.RuinedEngine.rendering.GBuffer;
 import com.RuinedEngine.rendering.GuiRender;
 import com.RuinedEngine.rendering.LightsRender;
+import com.RuinedEngine.rendering.NKRender;
 import com.RuinedEngine.rendering.SceneRender;
 import com.RuinedEngine.rendering.ShadowRender;
 import com.RuinedEngine.rendering.SkyBoxRender;
@@ -18,6 +19,7 @@ public class Render {
 	private SceneRender sceneRender;
 	private LightsRender lightsRender;
 	private GuiRender guiRender;
+	private NKRender nkRender;
 	private SkyBoxRender skyBoxRender;
 	private ShadowRender shadowRender;
 	public Render(Window window) {
@@ -28,6 +30,7 @@ public class Render {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		sceneRender = new SceneRender();
 		guiRender = new GuiRender(window);
+		nkRender = new NKRender(window);
 		skyBoxRender = new SkyBoxRender();
 		shadowRender = new ShadowRender();
 		lightsRender = new LightsRender();

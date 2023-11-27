@@ -1,5 +1,6 @@
 package com.RuinedEngine.core;
 
+import com.RuinedEngine.GUI.LightControls;
 import com.RuinedEngine.VFX.Fog;
 import com.RuinedEngine.VFX.SkyBox;
 import com.RuinedEngine.entity.Entity;
@@ -12,6 +13,9 @@ import com.RuinedEngine.utils.AnimationData;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.nuklear.NkBuffer;
+import org.lwjgl.nuklear.NkContext;
+import org.lwjgl.nuklear.Nuklear;
 
 public class Main implements IAppLogic {
 

@@ -7,6 +7,7 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
@@ -53,6 +54,8 @@ public class GuiRender {
 		}
 	}
 	private void createUIResources(Window window){
+		NkContext.create();
+		
 		ImGui.createContext();
 		ImGuiIO imGuiIO = ImGui.getIO();
 		imGuiIO.setIniFilename(null);
