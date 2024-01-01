@@ -8,7 +8,9 @@ import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.ModelLoader;
 import com.RuinedEngine.lighting.AmbientLight;
 import com.RuinedEngine.lighting.DirLight;
+import com.RuinedEngine.lighting.PointLight;
 import com.RuinedEngine.lighting.SceneLights;
+import com.RuinedEngine.lighting.SpotLight;
 import com.RuinedEngine.utils.AnimationData;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -23,6 +25,7 @@ public class Main implements IAppLogic {
     private static final float MOVEMENT_SPEED = 0.005f;
     private AnimationData animationData;
     private float lightAngle;
+    private LightControls lightControls;
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -62,14 +65,14 @@ public class Main implements IAppLogic {
         scene.addEntity(bobEntity);
 
         SceneLights sceneLights = new SceneLights();
-        AmbientLight ambientLight = sceneLights.getAmbientLight();
-        ambientLight.setIntensity(0.5f);
-        ambientLight.setColor(0.3f, 0.3f, 0.3f);
-
-        DirLight dirLight = sceneLights.getDirLight();
-        dirLight.setPosition(0, 1, 0);
-        dirLight.setIntensity(1.0f);
+        sceneLights.getAmbientLight().setIntensity(0.3f);
         scene.setSceneLights(sceneLights);
+        sceneLights.getPointLights().add(new PointLight(new Vector3f(1, 1, 1),
+                new Vector3f(0, 0, -1.4f), 1.0f));
+
+        Vector3f coneDir = new Vector3f(0, 0, -1);
+        sceneLights.getSpotLights().add(new SpotLight(new PointLight(new Vector3f(1, 1, 1),
+                new Vector3f(0, 0, -1.4f), 0.0f), coneDir, 140.0f));
 
         SkyBox skyBox = new SkyBox("resources/models/skybox/skybox.obj", scene.getTextureCache());
         skyBox.getSkyBoxEntity().setScale(100);
@@ -83,6 +86,8 @@ public class Main implements IAppLogic {
         camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
 
         lightAngle = 45.001f;
+        lightControls = new LightControls(scene);
+        scene.setGuiInstance(lightControls);
     }
 
     @Override
