@@ -3,6 +3,10 @@ package com.RuinedEngine.core;
 import com.RuinedEngine.GUI.LightControls;
 import com.RuinedEngine.VFX.Fog;
 import com.RuinedEngine.VFX.SkyBox;
+import com.RuinedEngine.audio.SoundBuffer;
+import com.RuinedEngine.audio.SoundListener;
+import com.RuinedEngine.audio.SoundManager;
+import com.RuinedEngine.audio.SoundSource;
 import com.RuinedEngine.entity.Entity;
 import com.RuinedEngine.entity.Model;
 import com.RuinedEngine.entity.ModelLoader;
@@ -18,6 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkBuffer;
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.Nuklear;
+import org.lwjgl.openal.AL11;
 
 public class Main implements IAppLogic {
 
@@ -26,6 +31,8 @@ public class Main implements IAppLogic {
     private AnimationData animationData;
     private float lightAngle;
     private LightControls lightControls;
+    private SoundManager soundMgr;
+    private SoundSource playerSoundSource;
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -40,6 +47,7 @@ public class Main implements IAppLogic {
     @Override
     public void cleanup() {
         // Nothing to be done yet
+    	soundMgr.cleanup();
     }
 
     @Override
@@ -86,8 +94,29 @@ public class Main implements IAppLogic {
         camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
 
         lightAngle = 45.001f;
-        lightControls = new LightControls(scene);
+        initSounds(bobEntity.getPosition(), camera);
+        lightControls = new LightControls(scene, soundMgr);
         scene.setGuiInstance(lightControls);
+        
+    }
+    
+    private void initSounds(Vector3f position, Camera camera) {
+    	soundMgr = new SoundManager();
+    	soundMgr.setListener(new SoundListener(camera.getPosition()));
+    	
+    	SoundBuffer buffer = new SoundBuffer("resources/sounds/creak1.ogg");
+    	soundMgr.addSoundBuffer(buffer);
+    	playerSoundSource = new SoundSource(false, false);
+    	playerSoundSource.setPosition(position);
+    	playerSoundSource.setBuffer(buffer.getBufferId());
+    	soundMgr.addSoundSource("CREAK", playerSoundSource);
+    	
+    	buffer = new SoundBuffer("resources/sounds/woo_scary.ogg");
+    	soundMgr.addSoundBuffer(buffer);
+    	SoundSource source = new SoundSource(true, true);
+    	source.setBuffer(buffer.getBufferId());
+    	soundMgr.addSoundSource("MUSIC", source);
+    	source.play();
     }
 
     @Override
@@ -124,16 +153,14 @@ public class Main implements IAppLogic {
             Vector2f displVec = mouseInput.getDisplVec();
             camera.addRotation((float) Math.toRadians(-displVec.x * MOUSE_SENSITIVITY), (float) Math.toRadians(-displVec.y * MOUSE_SENSITIVITY));
         }
-
-        SceneLights sceneLights = scene.getSceneLights();
-        DirLight dirLight = sceneLights.getDirLight();
-        double angRad = Math.toRadians(lightAngle);
-        dirLight.getDirection().z = (float) Math.sin(angRad);
-        dirLight.getDirection().y = (float) Math.cos(angRad);
+        soundMgr.updateListenerPosition(camera);
     }
 
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
         animationData.nextFrame();
+        if(animationData.getCurrentFrameIdx() == 45) {
+        	playerSoundSource.play();
+        }
     }
 }

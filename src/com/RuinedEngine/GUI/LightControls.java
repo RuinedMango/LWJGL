@@ -3,6 +3,7 @@ package com.RuinedEngine.GUI;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import com.RuinedEngine.audio.SoundManager;
 import com.RuinedEngine.core.MouseInput;
 import com.RuinedEngine.core.Scene;
 import com.RuinedEngine.core.Window;
@@ -39,11 +40,15 @@ public class LightControls implements IGuiInstance{
     private float[] spotLightX;
     private float[] spotLightY;
     private float[] spotLightZ;
+    private SoundManager sound;
+    private int oldvalue;
+    private int[] isHRTF;
 
-    public LightControls(Scene scene) {
+    public LightControls(Scene scene, SoundManager sound) {
         SceneLights sceneLights = scene.getSceneLights();
         AmbientLight ambientLight = sceneLights.getAmbientLight();
         Vector3f color = ambientLight.getColor();
+        isHRTF = new int[1];
 
         ambientFactor = new float[]{ambientLight.getIntensity()};
         ambientColor = new float[]{color.x, color.y, color.z};
@@ -80,6 +85,7 @@ public class LightControls implements IGuiInstance{
         dirLightY = new float[]{pos.y};
         dirLightZ = new float[]{pos.z};
         dirLightIntensity = new float[]{dirLight.getIntensity()};
+        this.sound = sound;
     }
 
     @Override
@@ -124,6 +130,9 @@ public class LightControls implements IGuiInstance{
             ImGui.colorEdit3("Dir Light color", dirLightColor);
             ImGui.sliderFloat("Dir Light Intensity", dirLightIntensity, 0.0f, 1.0f, "%.2f");
         }
+        if(ImGui.collapsingHeader("Sound")){
+        	ImGui.sliderInt("issHRTF", isHRTF, 0, 1);
+        }
 
         ImGui.end();
         ImGui.endFrame();
@@ -162,6 +171,14 @@ public class LightControls implements IGuiInstance{
             dirLight.setPosition(dirLightX[0], dirLightY[0], dirLightZ[0]);
             dirLight.setColor(dirLightColor[0], dirLightColor[1], dirLightColor[2]);
             dirLight.setIntensity(dirLightIntensity[0]);
+            if(isHRTF[0] == 1 && oldvalue != 1) {
+            	sound.setHRTF(true);
+            	oldvalue = 1;
+            }
+            if(isHRTF[0] == 0 && oldvalue != 0) {
+            	sound.setHRTF(false);
+            	oldvalue = 0;
+            }
         }
         return consumed;
     }

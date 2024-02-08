@@ -14,6 +14,7 @@ import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.SOFTHRTF;
 
 import com.RuinedEngine.core.Camera;
 
@@ -79,6 +80,20 @@ public class SoundManager {
 	}
 	public void setListener(SoundListener listener) {
 		this.listener = listener;
+	}
+	public void setHRTF(boolean enable) {
+		int num_hrtf = ALC10.alcGetInteger(device, 6548);
+		if(num_hrtf == 0) {
+			System.out.println("No HRTFs found");
+		}else {
+			if(!SOFTHRTF.alcResetDeviceSOFT(device, new int[]{6546, enable ? 1 : 0, 0})) {
+				System.out.println("Failed to reset HRTF");
+			}
+			int hrtf_state = ALC10.alcGetInteger(device, 6546);
+			if(hrtf_state == 0 && enable) {
+				System.out.println("HRTF not Enabled");
+			}
+		}
 	}
 	public void updateListenerPosition(Camera camera) {
 		Matrix4f viewMatrix = camera.getViewMatrix();
